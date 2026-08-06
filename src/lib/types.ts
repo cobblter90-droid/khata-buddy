@@ -51,6 +51,8 @@ export type LedgerEntry = BaseDoc & {
   /** Base64 data URL of an attached bill photo. Stored locally only. */
   photo?: string | null;
   reminderDate?: string | null;
+  /** Set when this entry was auto-created by a credit (udhaar) sale. */
+  saleId?: string | null;
 };
 
 export type CashbookEntry = BaseDoc & {

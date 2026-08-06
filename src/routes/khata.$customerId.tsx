@@ -166,6 +166,11 @@ function CustomerPage() {
                   {e.kind === "diye" ? t("iGave") : t("iReceived")}
                 </p>
                 <p className="text-xs text-muted-foreground">{formatDate(e.date)}</p>
+                {e.saleId ? (
+                  <span className="mt-1 inline-block rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold text-secondary-foreground">
+                    {t("fromSale")}
+                  </span>
+                ) : null}
                 {e.note ? <p className="mt-1 text-xs text-muted-foreground">{e.note}</p> : null}
                 {e.reminderDate ? (
                   <p className="mt-1 text-[11px] font-semibold text-brass">

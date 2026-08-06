@@ -123,6 +123,8 @@ export async function initDb(): Promise<void> {
       loadWeb();
     }
     ready = true;
+    // Tell every subscriber (settings, lists) that stored data is now loaded.
+    emit();
   })();
 
   return readyPromise;
