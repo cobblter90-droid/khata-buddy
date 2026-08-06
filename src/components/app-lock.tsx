@@ -38,6 +38,7 @@ export function AppLock({ pin, onUnlock }: Props) {
         {error ? <p className="text-sm font-medium text-destructive">{t("pinWrong")}</p> : null}
 
         <AmountKeypad
+          digitsOnly
           value={value}
           onChange={(next) => {
             setError(false);
@@ -45,6 +46,7 @@ export function AppLock({ pin, onUnlock }: Props) {
           }}
           className="mt-4"
         />
+
         <Button size="lg" className="mt-4 w-full" onClick={submit} disabled={value.length < 4}>
           {t("unlock")}
         </Button>
