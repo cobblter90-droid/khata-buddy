@@ -153,7 +153,24 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <LangContext.Provider value={lang}>
       <div className="safe-top mx-auto min-h-screen max-w-lg pb-24">
-
+        {update ? (
+          <div className="flex items-center justify-between gap-2 bg-primary px-4 py-2 text-primary-foreground">
+            <p className="text-xs font-semibold">
+              {translate("updateAvailable", lang)} · v{update.latestVersion}
+            </p>
+            {update.downloadUrl ? (
+              <a
+                href={update.downloadUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex shrink-0 items-center gap-1 rounded-md bg-primary-foreground/15 px-2.5 py-1 text-xs font-bold"
+              >
+                <Download className="h-3.5 w-3.5" />
+                {translate("download", lang)}
+              </a>
+            ) : null}
+          </div>
+        ) : null}
 
 
         {offline ? (
