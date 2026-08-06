@@ -42,9 +42,10 @@ function ItemsPage() {
 
   const q = query.trim().toLowerCase();
   const filtered = useMemo(() => {
-    if (!q) return [];
+    if (!q) return items.slice(-5).reverse();
     return items.filter((i) => i.name.toLowerCase().includes(q));
   }, [items, q]);
+
 
   return (
     <div className="px-4 pb-6">
