@@ -30,11 +30,12 @@ export function CustomerPicker({ value, onChange }: Props) {
 
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return customers.slice(0, 6);
+    if (!q) return [];
     return customers
       .filter((c) => `${c.name} ${c.phone}`.toLowerCase().includes(q))
       .slice(0, 8);
   }, [customers, query]);
+
 
   async function importContacts() {
     setLoading(true);
