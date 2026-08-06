@@ -26,6 +26,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [update, setUpdate] = useState<UpdateInfo | null>(null);
   const [updateDismissed, setUpdateDismissed] = useState(false);
   const [offline, setOffline] = useState(false);
+  const [unlocked, setUnlocked] = useState(false);
   const settings = useSettings();
   const lang = settings.language;
 
