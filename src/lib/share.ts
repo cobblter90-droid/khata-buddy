@@ -9,14 +9,20 @@ function isNative(): boolean {
   return Boolean((window as any).Capacitor?.isNativePlatform?.());
 }
 
-async function nodeToCanvas(node: HTMLElement) {
-  const { default: html2canvas } = await import("html2canvas");
-  return html2canvas(node, {
+/**
+ * Renders a node to a canvas. Uses html-to-image (SVG foreignObject) because
+ * html2canvas cannot parse modern `oklch()` colors used by the theme.
+ */
+async function nodeToCanvas(node: HTMLElement): Promise<HTMLCanvasElement> {
+  const { toCanvas } = await import("html-to-image");
+  return toCanvas(node, {
     backgroundColor: "#ffffff",
-    scale: Math.min(3, Math.max(2, window.devicePixelRatio || 2)),
-    useCORS: true,
+    pixelRatio: Math.min(3, Math.max(2, window.devicePixelRatio || 2)),
+    cacheBust: true,
+    skipFonts: true,
   });
 }
+
 
 function stripDataUrl(dataUrl: string) {
   return dataUrl.slice(dataUrl.indexOf(",") + 1);
@@ -31,12 +37,20 @@ async function shareBase64(base64: string, fileName: string, mime: string, title
     await Share.share({ title, text: title, files: [uri] });
     return;
   }
-  // Web fallback: download the file so the flow is testable in the browser.
+  // Web fallback: download via a blob URL (data: URLs can navigate instead).
+  const bin = atob(base64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i += 1) bytes[i] = bin.charCodeAt(i);
+  const url = URL.createObjectURL(new Blob([bytes], { type: mime }));
   const link = document.createElement("a");
-  link.href = `data:${mime};base64,${base64}`;
+  link.href = url;
   link.download = fileName;
+  document.body.appendChild(link);
   link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
 }
+
 
 export async function shareNodeAsImage(
   node: HTMLElement,
