@@ -43,7 +43,7 @@ export function LedgerDialog({ open, onOpenChange, customerId, kind }: Props) {
   }
 
   async function save() {
-    const value = toNumber(amount);
+    const value = evalExpression(amount);
     if (value <= 0) {
       toast.error(t("amountRequired"));
       return;
