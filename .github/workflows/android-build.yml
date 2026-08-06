@@ -75,44 +75,20 @@ jobs:
       - name: Capacitor sync
         run: npx cap sync android
 
-      # READ_CONTACTS is a runtime permission: it must exist in the merged
-      # manifest or the in-app prompt is never shown on a real device.
-      - name: Ensure READ_CONTACTS permission in AndroidManifest
-        run: |
-          MANIFEST=android/app/src/main/AndroidManifest.xml
-          grep -q 'android.permission.READ_CONTACTS' "$MANIFEST" || \
-            sed -i 's#</manifest>#    <uses-permission android:name="android.permission.READ_CONTACTS" />\n</manifest>#' "$MANIFEST"
-          grep -n 'READ_CONTACTS' "$MANIFEST" || { echo "::error::READ_CONTACTS missing"; exit 1; }
+      # READ_CONTACTS/WRITE_CONTACTS must exist in the merged manifest or the
+      # contacts plugin refuses to load and reports a missing-permission error.
+      - name: Ensure contacts permissions in AndroidManifest
+        run: node scripts/ensure-android-permissions.mjs
 
       # Version stamp comes from the single source of truth in the source code.
       - name: Stamp versionName / versionCode from APP_VERSION
-        run: |
-          VERSION=$(node -e "const s=require('fs').readFileSync('src/lib/constants.ts','utf8');console.log(/APP_VERSION\s*=\s*[\"']([^\"']+)[\"']/.exec(s)[1])")
-          echo "APP_VERSION = $VERSION"
-          IFS=. read -r MA MI PA <<< "$VERSION"
-          CODE=$(( ${MA:-0} * 10000 + ${MI:-0} * 100 + ${PA:-0} ))
-          echo "versionCode = $CODE"
-          sed -i "s/versionName \".*\"/versionName \"$VERSION\"/" android/app/build.gradle
-          sed -i "s/versionCode [0-9]*/versionCode $CODE/" android/app/build.gradle
-          grep -nE "versionCode|versionName" android/app/build.gradle
+        run: node scripts/stamp-version.mjs
 
       # Point the debug signingConfig at the committed keystore explicitly, so
       # the build never falls back to a freshly generated one.
       - name: Pin debug signingConfig to committed keystore
-        run: |
-          cp android-resources/debug.keystore android/app/debug.keystore
-          node - <<'JS'
-          const fs = require('fs');
-          const p = 'android/app/build.gradle';
-          let s = fs.readFileSync(p, 'utf8');
-          if (!s.includes('assanDebugKeystore')) {
-            const cfg = `    signingConfigs {\n        debug {\n            // assanDebugKeystore: stable committed key — do not regenerate\n            storeFile file('debug.keystore')\n            storePassword 'android'\n            keyAlias 'androiddebugkey'\n            keyPassword 'android'\n        }\n    }\n`;
-            s = s.replace(/android\s*\{/, (m) => m + '\n' + cfg);
-            s = s.replace(/buildTypes\s*\{\s*/, (m) => m + '\n        debug {\n            signingConfig signingConfigs.debug\n        }\n');
-            fs.writeFileSync(p, s);
-          }
-          console.log(s);
-          JS
+        run: cp android-resources/debug.keystore android/app/debug.keystore && node scripts/pin-debug-keystore.mjs
+
 
       # 3) Debug build only — signed with the stable committed keystore.
       - name: Assemble debug APK

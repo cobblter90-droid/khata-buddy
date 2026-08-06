@@ -20,14 +20,26 @@ function isNative(): boolean {
 async function nodeToCanvas(node: HTMLElement): Promise<HTMLCanvasElement> {
   const { toPng } = await import("html-to-image");
   const pixelRatio = Math.min(3, Math.max(2, window.devicePixelRatio || 2));
-  const dataUrl = await toPng(node, {
+  const options = {
     backgroundColor: "#ffffff",
     pixelRatio,
     cacheBust: true,
-    skipFonts: true,
     width: node.offsetWidth,
     height: node.offsetHeight,
-  });
+  } as const;
+
+  // Fonts are self-hosted, so they can be inlined into the exported image and
+  // the bill looks exactly like it does on screen. If inlining ever fails
+  // (font fetch blocked), fall back to skipping fonts rather than losing the
+  // share entirely — the layout survives either way.
+  let dataUrl: string;
+  try {
+    dataUrl = await toPng(node, { ...options, skipFonts: false });
+  } catch (err) {
+    console.warn("font inlining failed, exporting without embedded fonts", err);
+    dataUrl = await toPng(node, { ...options, skipFonts: true });
+  }
+
 
   const img = await new Promise<HTMLImageElement>((resolve, reject) => {
     const el = new Image();
@@ -150,4 +162,47 @@ export async function shareNodeAsPdf(node: HTMLElement, fileName: string, title:
 
   const base64 = stripDataUrl(pdf.output("datauristring"));
   await shareBase64(base64, `${fileName}.pdf`, "application/pdf", title);
+}
+
+/**
+ * Saves a text document (backup JSON) as a real file the user can find outside
+ * the app: on Android it lands in the shared Documents folder and the share
+ * sheet opens so it can be moved to Drive/WhatsApp/Files. On web it downloads.
+ * Returns a human-readable location for the success toast.
+ */
+export async function saveTextFile(
+  fileName: string,
+  text: string,
+  mime: string,
+  title: string,
+): Promise<string> {
+  if (isNative()) {
+    const { Filesystem, Directory, Encoding } = await import("@capacitor/filesystem");
+    const { Share } = await import("@capacitor/share");
+    let directory = Directory.Documents;
+    try {
+      await Filesystem.writeFile({ path: fileName, data: text, directory, encoding: Encoding.UTF8 });
+    } catch {
+      // Some OEM builds refuse Documents; External is always writable.
+      directory = Directory.External;
+      await Filesystem.writeFile({ path: fileName, data: text, directory, encoding: Encoding.UTF8 });
+    }
+    const { uri } = await Filesystem.getUri({ path: fileName, directory });
+    try {
+      await Share.share({ title, text: title, files: [uri] });
+    } catch {
+      /* user dismissed the sheet — the file is already saved */
+    }
+    return uri.replace(/^file:\/\//, "");
+  }
+
+  const url = URL.createObjectURL(new Blob([text], { type: mime }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+  return fileName;
 }

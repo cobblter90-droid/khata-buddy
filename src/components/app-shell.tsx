@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type ReactNode } from "react";
-import { Download, Loader2, WifiOff, X } from "lucide-react";
+import { Loader2, WifiOff } from "lucide-react";
 
 import { ActivationScreen } from "@/components/activation-screen";
 import { AppLock } from "@/components/app-lock";
@@ -8,12 +8,10 @@ import { TabBar } from "@/components/tab-bar";
 import { initDb } from "@/lib/db";
 import { LangContext, translate } from "@/lib/i18n";
 import {
-  checkAppVersion,
   checkLicense,
   clearLicenseKey,
   getLastStatus,
   getStoredLicenseKey,
-  type UpdateInfo,
 } from "@/lib/license";
 import { useSettings } from "@/lib/use-store";
 
@@ -23,8 +21,6 @@ const RECHECK_MS = 5 * 60 * 1000;
 
 export function AppShell({ children }: { children: ReactNode }) {
   const [phase, setPhase] = useState<Phase>("loading");
-  const [update, setUpdate] = useState<UpdateInfo | null>(null);
-  const [updateDismissed, setUpdateDismissed] = useState(false);
   const [offline, setOffline] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
   const settings = useSettings();
@@ -65,9 +61,6 @@ export function AppShell({ children }: { children: ReactNode }) {
       await initDb();
       if (cancelled) return;
       await verify();
-      void checkAppVersion().then((info) => {
-        if (!cancelled && info.available) setUpdate(info);
-      });
     })();
     return () => {
       cancelled = true;
@@ -150,33 +143,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <LangContext.Provider value={lang}>
       <div className="safe-top mx-auto min-h-screen max-w-lg pb-24">
-        {update && !updateDismissed ? (
-          <div className="flex items-center gap-2 bg-brass px-4 py-2 text-sm font-semibold text-brass-foreground">
-            <span className="flex-1">
-              {translate("updateAvailable", lang)}
-              {update.latest ? ` · v${update.latest}` : ""}
-            </span>
-            {update.url ? (
-              <a
-                href={update.url}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-1 rounded-full bg-brass-foreground/12 px-2.5 py-1 text-xs"
-              >
-                <Download className="h-3.5 w-3.5" />
-                {translate("download", lang)}
-              </a>
-            ) : null}
-            <button
-              type="button"
-              aria-label="dismiss"
-              onClick={() => setUpdateDismissed(true)}
-              className="p-1"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        ) : null}
+
+
 
         {offline ? (
           <p className="flex items-center gap-1.5 bg-muted px-4 py-1 text-[11px] font-semibold text-muted-foreground">

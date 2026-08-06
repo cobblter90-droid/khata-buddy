@@ -1,6 +1,6 @@
 import { Preferences } from "@capacitor/preferences";
 
-import { API_BASE, APP_VERSION, PRODUCT_KEY } from "./constants";
+import { API_BASE, PRODUCT_KEY } from "./constants";
 
 export type LicenseStatus = "active" | "locked" | "not_found" | "offline" | "unknown";
 
@@ -129,41 +129,5 @@ export async function checkLicense(licenseKey: string): Promise<LicenseResult> {
   } catch {
     // Offline: never block the shopkeeper. Fall back to the last known status.
     return { status: "offline" };
-  }
-}
-
-export type UpdateInfo = { available: boolean; latest?: string | undefined; url?: string | undefined };
-
-function isNewer(latest: string, current: string) {
-  const a = latest.split(".").map((n) => parseInt(n, 10) || 0);
-  const b = current.split(".").map((n) => parseInt(n, 10) || 0);
-  for (let i = 0; i < Math.max(a.length, b.length); i += 1) {
-    const x = a[i] ?? 0;
-    const y = b[i] ?? 0;
-    if (x !== y) return x > y;
-  }
-  return false;
-}
-
-/** Never throws, never blocks — silent failure is intentional. */
-export async function checkAppVersion(): Promise<UpdateInfo> {
-  try {
-    const res = await fetch(
-      `${API_BASE}/api/public/app-version?product_key=${encodeURIComponent(PRODUCT_KEY)}`,
-    );
-    if (!res.ok) return { available: false };
-    const payload = (await res.json()) as Record<string, unknown>;
-    const latest = String(
-      payload["version"] ?? payload["latest_version"] ?? payload["app_version"] ?? "",
-    ).trim();
-    const url = payload["download_url"] ?? payload["url"] ?? payload["apk_url"];
-    if (!latest) return { available: false };
-    return {
-      available: isNewer(latest, APP_VERSION),
-      latest,
-      url: typeof url === "string" ? url : undefined,
-    };
-  } catch {
-    return { available: false };
   }
 }
