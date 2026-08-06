@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { Download, Loader2, WifiOff, X } from "lucide-react";
 
 import { ActivationScreen } from "@/components/activation-screen";
+import { AppLock } from "@/components/app-lock";
 import { LockedScreen } from "@/components/locked-screen";
 import { TabBar } from "@/components/tab-bar";
 import { initDb } from "@/lib/db";
@@ -102,6 +103,16 @@ export function AppShell({ children }: { children: ReactNode }) {
       </div>
     );
   }
+
+  // App lock: a PIN gate that only appears once the ledger is unlocked by license.
+  if (phase === "ready" && settings.pinEnabled && settings.pin && !unlocked) {
+    return (
+      <LangContext.Provider value={lang}>
+        <AppLock pin={settings.pin} onUnlock={() => setUnlocked(true)} />
+      </LangContext.Provider>
+    );
+  }
+
 
   if (phase === "locked") {
     return (

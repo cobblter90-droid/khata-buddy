@@ -9,7 +9,8 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "build:mobile": "vite build && rm -rf dist && cp -r .output/public dist && cp -n dist/index.html dist/200.html 2>/dev/null || true"
   },
   "dependencies": {
     "@capacitor-community/contacts": "^8.0.0",
