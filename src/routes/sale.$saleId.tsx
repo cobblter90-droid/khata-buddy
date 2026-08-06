@@ -145,9 +145,8 @@ function SaleInvoicePage() {
         ) : null}
 
         <div className="mt-3 space-y-1 border-t border-border pt-2 text-sm">
-          {sale.lines.length > 0 || sale.discount > 0 ? (
-            <Row label={t("total")} value={rs(subtotal)} />
-          ) : null}
+          {sale.discount > 0 ? <Row label={t("total")} value={rs(subtotal)} /> : null}
+
           {sale.discount > 0 ? <Row label={t("discount")} value={`- ${rs(sale.discount)}`} /> : null}
           <div className="flex justify-between text-base font-bold">
             <span>{t("grandTotal")}</span>
