@@ -6,7 +6,8 @@
 
 /*
  * Assan Khata By U&R — design system.
- * Warm ledger/bazaar palette: deep pine green, brass amber, paper cream.
+ * Brand palette from the app icon: dark navy + bold lime green, soft blue as the
+ * chart counterpart, white cards on very light grey.
  * All colours are oklch semantic tokens. Never hardcode colours in components.
  */
 
@@ -57,85 +58,85 @@
 
   --color-chart-1: var(--cash);
   --color-chart-2: var(--credit);
-  --color-chart-3: var(--brass);
+  --color-chart-3: var(--credit-soft);
   --color-chart-4: var(--primary);
   --color-chart-5: var(--muted-foreground);
 
-  --shadow-card: 0 1px 2px oklch(0.26 0.045 155 / 0.06), 0 6px 18px oklch(0.26 0.045 155 / 0.07);
-  --shadow-raised: 0 10px 30px oklch(0.26 0.045 155 / 0.14);
-  --shadow-bar: 0 -6px 24px oklch(0.26 0.045 155 / 0.1);
+  --shadow-card: 0 1px 2px oklch(0.26 0.018 264 / 0.05), 0 8px 24px oklch(0.26 0.018 264 / 0.07);
+  --shadow-raised: 0 12px 32px oklch(0.26 0.018 264 / 0.14);
+  --shadow-bar: 0 -6px 24px oklch(0.26 0.018 264 / 0.09);
 }
 
 :root {
-  --radius: 0.9rem;
+  --radius: 1.15rem;
 
-  --background: oklch(0.982 0.011 88);
-  --foreground: oklch(0.239 0.032 158);
+  --background: oklch(0.978 0.002 260);
+  --foreground: oklch(0.26 0.018 264);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.239 0.032 158);
+  --card-foreground: oklch(0.26 0.018 264);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.239 0.032 158);
+  --popover-foreground: oklch(0.26 0.018 264);
 
-  --primary: oklch(0.386 0.077 159);
-  --primary-foreground: oklch(0.985 0.012 88);
-  --secondary: oklch(0.945 0.021 120);
-  --secondary-foreground: oklch(0.318 0.06 159);
-  --muted: oklch(0.951 0.014 92);
-  --muted-foreground: oklch(0.522 0.028 155);
-  --accent: oklch(0.93 0.055 84);
-  --accent-foreground: oklch(0.32 0.062 70);
-  --destructive: oklch(0.535 0.198 25);
-  --destructive-foreground: oklch(0.985 0.012 88);
+  --primary: oklch(0.845 0.185 122);
+  --primary-foreground: oklch(0.24 0.018 264);
+  --secondary: oklch(0.955 0.004 262);
+  --secondary-foreground: oklch(0.3 0.018 264);
+  --muted: oklch(0.962 0.003 262);
+  --muted-foreground: oklch(0.555 0.014 264);
+  --accent: oklch(0.955 0.055 122);
+  --accent-foreground: oklch(0.3 0.05 128);
+  --destructive: oklch(0.575 0.2 25);
+  --destructive-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.897 0.017 100);
-  --input: oklch(0.884 0.019 100);
-  --ring: oklch(0.386 0.077 159);
+  --border: oklch(0.918 0.003 262);
+  --input: oklch(0.9 0.004 262);
+  --ring: oklch(0.845 0.185 122);
 
-  --cash: oklch(0.535 0.116 158);
-  --cash-foreground: oklch(0.985 0.012 88);
-  --cash-soft: oklch(0.937 0.043 158);
-  --credit: oklch(0.6 0.163 41);
-  --credit-foreground: oklch(0.99 0.01 88);
-  --credit-soft: oklch(0.945 0.045 60);
-  --brass: oklch(0.746 0.132 78);
-  --brass-foreground: oklch(0.27 0.05 70);
-  --surface: oklch(0.968 0.014 95);
-  --surface-foreground: oklch(0.239 0.032 158);
+  --cash: oklch(0.845 0.185 122);
+  --cash-foreground: oklch(0.24 0.018 264);
+  --cash-soft: oklch(0.955 0.07 122);
+  --credit: oklch(0.665 0.125 248);
+  --credit-foreground: oklch(0.99 0 0);
+  --credit-soft: oklch(0.955 0.032 248);
+  --brass: oklch(0.34 0.025 264);
+  --brass-foreground: oklch(0.97 0.05 122);
+  --surface: oklch(0.968 0.003 262);
+  --surface-foreground: oklch(0.26 0.018 264);
 }
 
 .dark {
-  --background: oklch(0.187 0.023 158);
-  --foreground: oklch(0.955 0.012 90);
-  --card: oklch(0.235 0.028 158);
-  --card-foreground: oklch(0.955 0.012 90);
-  --popover: oklch(0.235 0.028 158);
-  --popover-foreground: oklch(0.955 0.012 90);
+  --background: oklch(0.24 0.018 264);
+  --foreground: oklch(0.965 0.003 262);
+  --card: oklch(0.288 0.019 264);
+  --card-foreground: oklch(0.965 0.003 262);
+  --popover: oklch(0.288 0.019 264);
+  --popover-foreground: oklch(0.965 0.003 262);
 
-  --primary: oklch(0.72 0.111 158);
-  --primary-foreground: oklch(0.19 0.03 158);
-  --secondary: oklch(0.29 0.031 158);
-  --secondary-foreground: oklch(0.945 0.012 90);
-  --muted: oklch(0.283 0.026 158);
-  --muted-foreground: oklch(0.712 0.024 150);
-  --accent: oklch(0.34 0.048 78);
-  --accent-foreground: oklch(0.94 0.03 88);
-  --destructive: oklch(0.63 0.184 25);
-  --destructive-foreground: oklch(0.98 0.01 88);
+  --primary: oklch(0.845 0.185 122);
+  --primary-foreground: oklch(0.24 0.018 264);
+  --secondary: oklch(0.33 0.019 264);
+  --secondary-foreground: oklch(0.96 0.003 262);
+  --muted: oklch(0.325 0.017 264);
+  --muted-foreground: oklch(0.735 0.012 264);
+  --accent: oklch(0.36 0.06 122);
+  --accent-foreground: oklch(0.94 0.09 122);
+  --destructive: oklch(0.64 0.19 25);
+  --destructive-foreground: oklch(0.99 0 0);
 
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 16%);
-  --ring: oklch(0.72 0.111 158);
+  --ring: oklch(0.845 0.185 122);
 
-  --cash: oklch(0.68 0.128 158);
-  --cash-foreground: oklch(0.18 0.03 158);
-  --cash-soft: oklch(0.32 0.055 158);
-  --credit: oklch(0.72 0.152 48);
-  --credit-foreground: oklch(0.2 0.04 40);
-  --credit-soft: oklch(0.33 0.06 48);
-  --brass: oklch(0.78 0.13 78);
-  --brass-foreground: oklch(0.22 0.04 70);
-  --surface: oklch(0.222 0.026 158);
-  --surface-foreground: oklch(0.955 0.012 90);
+  --cash: oklch(0.845 0.185 122);
+  --cash-foreground: oklch(0.24 0.018 264);
+  --cash-soft: oklch(0.36 0.075 122);
+  --credit: oklch(0.72 0.115 248);
+  --credit-foreground: oklch(0.22 0.03 264);
+  --credit-soft: oklch(0.35 0.055 248);
+  --brass: oklch(0.9 0.14 122);
+  --brass-foreground: oklch(0.24 0.018 264);
+  --surface: oklch(0.275 0.018 264);
+  --surface-foreground: oklch(0.965 0.003 262);
 }
 
 @layer base {
