@@ -88,7 +88,7 @@ function SaleInvoicePage() {
       <div ref={billRef} className="rounded-2xl bg-card p-5 text-card-foreground shadow-card">
         <div className="text-center">
           <img
-            src={settings.logo || LOGO_URL}
+            src={LOGO_URL}
             alt={settings.businessName || "Assan Khata"}
             className="mx-auto mb-2 h-14 w-14 rounded-xl object-contain"
           />
@@ -145,7 +145,9 @@ function SaleInvoicePage() {
         ) : null}
 
         <div className="mt-3 space-y-1 border-t border-border pt-2 text-sm">
-          <Row label={t("total")} value={rs(subtotal)} />
+          {sale.lines.length > 0 || sale.discount > 0 ? (
+            <Row label={t("total")} value={rs(subtotal)} />
+          ) : null}
           {sale.discount > 0 ? <Row label={t("discount")} value={`- ${rs(sale.discount)}`} /> : null}
           <div className="flex justify-between text-base font-bold">
             <span>{t("grandTotal")}</span>
@@ -173,14 +175,14 @@ function SaleInvoicePage() {
           <Share2 className="mr-2 h-4 w-4" />
           {t("shareInvoice")}
         </Button>
-        <div className="grid grid-cols-2 gap-3">
-          <Button variant="outline" className="h-12" onClick={() => setEditing(true)}>
-            <Pencil className="mr-2 h-4 w-4" />
-            {t("editSale")}
+        <div className="space-y-3">
+          <Button variant="outline" className="h-12 w-full justify-center" onClick={() => setEditing(true)}>
+            <Pencil className="mr-2 h-4 w-4 shrink-0" />
+            <span className="truncate">{t("editSale")}</span>
           </Button>
           <Button
             variant="outline"
-            className="h-12 border-destructive/40 text-destructive"
+            className="h-12 w-full justify-center border-destructive/40 text-destructive"
             onClick={() => {
               void (async () => {
                 await deleteSaleWithLedger(sale!.id);
@@ -189,8 +191,8 @@ function SaleInvoicePage() {
               })();
             }}
           >
-            <Trash2 className="mr-2 h-4 w-4" />
-            {t("deleteSale")}
+            <Trash2 className="mr-2 h-4 w-4 shrink-0" />
+            <span className="truncate">{t("deleteSale")}</span>
           </Button>
         </div>
       </div>

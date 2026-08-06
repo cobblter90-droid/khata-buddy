@@ -42,7 +42,9 @@ export function CustomerPicker({ value, onChange }: Props) {
     const res = await loadContacts();
     setLoading(false);
     if (!res.ok) {
-      toast.error(res.reason === "denied" ? t("contactsDenied") : t("contactsUnavailable"));
+      if (res.reason === "denied") toast.error(t("contactsDenied"));
+      else if (res.reason === "web") toast.error(t("contactsWebOnly"));
+      else toast.error(`${t("contactsFailed")} ${res.detail ?? ""}`.trim());
       return;
     }
     if (res.contacts.length === 0) toast.info(t("contactsEmpty"));

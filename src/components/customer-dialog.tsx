@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import * as db from "@/lib/db";
+import { loadContacts } from "@/lib/contacts";
 import { useT } from "@/lib/i18n";
 import type { Customer } from "@/lib/types";
 
@@ -40,28 +41,16 @@ export function CustomerDialog({ open, onOpenChange, editing }: Props) {
 
   async function importContacts() {
     setLoading(true);
-    try {
-      const { Contacts } = await import("@capacitor-community/contacts");
-      // Runtime permission prompt — must complete before we can read anything.
-      const perm = await Contacts.requestPermissions();
-      if (perm.contacts !== "granted") {
-        toast.error(t("contactsDenied"));
-        return;
-      }
-      const res = await Contacts.getContacts({ projection: { name: true, phones: true } });
-      const mapped: Contact[] = (res.contacts ?? [])
-        .map((c) => ({
-          name: c.name?.display ?? "",
-          phone: c.phones?.[0]?.number ?? "",
-        }))
-        .filter((c) => c.name || c.phone);
-      if (mapped.length === 0) toast.info(t("contactsEmpty"));
-      setContacts(mapped);
-    } catch {
-      toast.error(t("contactsUnavailable"));
-    } finally {
-      setLoading(false);
+    const res = await loadContacts();
+    setLoading(false);
+    if (!res.ok) {
+      if (res.reason === "denied") toast.error(t("contactsDenied"));
+      else if (res.reason === "web") toast.error(t("contactsWebOnly"));
+      else toast.error(`${t("contactsFailed")} ${res.detail ?? ""}`.trim());
+      return;
     }
+    if (res.contacts.length === 0) toast.info(t("contactsEmpty"));
+    setContacts(res.contacts);
   }
 
   async function save(nextName: string, nextPhone: string) {

@@ -80,7 +80,9 @@ export function AppShell({ children }: { children: ReactNode }) {
     return () => window.clearInterval(id);
   }, [verify]);
 
-  // Re-check when the app comes back to the foreground.
+  // Re-check when the app comes back to the foreground, and re-lock the PIN
+  // gate as soon as it leaves it (Android usually resumes the same WebView
+  // instead of cold-starting, so state alone never resets).
   useEffect(() => {
     let remove: (() => void) | undefined;
     void (async () => {
@@ -88,6 +90,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         const { App } = await import("@capacitor/app");
         const handle = await App.addListener("appStateChange", ({ isActive }) => {
           if (isActive) void verify();
+          else setUnlocked(false);
         });
         remove = () => void handle.remove();
       } catch {
@@ -96,6 +99,16 @@ export function AppShell({ children }: { children: ReactNode }) {
     })();
     return () => remove?.();
   }, [verify]);
+
+  // Same for the browser/WebView lifecycle (covers back-button minimise).
+  useEffect(() => {
+    const onHide = () => {
+      if (document.visibilityState === "hidden") setUnlocked(false);
+    };
+    document.addEventListener("visibilitychange", onHide);
+    return () => document.removeEventListener("visibilitychange", onHide);
+  }, []);
+
 
   if (phase === "loading") {
     return (

@@ -8,7 +8,6 @@ import {
   LockKeyhole,
   ShieldCheck,
   Trash2,
-  Upload,
   Wallet,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -58,15 +57,6 @@ function AccountPage() {
   const [pin, setPin] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  function pickLogo(file: File | undefined) {
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") void saveSettings({ logo: reader.result });
-    };
-    reader.readAsDataURL(file);
-  }
-
   function exportBackup() {
     const blob = new Blob([JSON.stringify(db.exportSnapshot(), null, 2)], {
       type: "application/json",
@@ -97,15 +87,7 @@ function AccountPage() {
   return (
     <div className="px-4 pb-8">
       <header className="py-5 text-center">
-        {settings.logo ? (
-          <img
-            src={settings.logo}
-            alt={settings.businessName || t("appName")}
-            className="mx-auto h-20 w-20 rounded-3xl object-cover shadow-raised"
-          />
-        ) : (
-          <Logo className="mx-auto h-20 w-20 rounded-3xl shadow-raised" />
-        )}
+        <Logo className="mx-auto h-20 w-20 rounded-3xl shadow-raised" />
         <h1 className="mt-3 text-lg font-bold">{settings.businessName || t("appName")}</h1>
         <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
           By U&amp;R Developers · v{APP_VERSION}
@@ -134,16 +116,6 @@ function AccountPage() {
             <Label htmlFor="biz-address">{t("businessAddress")}</Label>
             <Input id="biz-address" value={address} onChange={(e) => setAddress(e.target.value)} />
           </div>
-          <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-primary">
-            <Upload className="h-4 w-4" />
-            {t("logoUpload")}
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => pickLogo(e.target.files?.[0])}
-            />
-          </label>
           <Button
             className="w-full"
             onClick={() => {

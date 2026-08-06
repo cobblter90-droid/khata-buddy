@@ -1,6 +1,6 @@
 /**
  * Customer ledger statement export: full khata or a custom date range,
- * rendered to a printable sheet and exported as PDF.
+ * rendered to a printable sheet and exported as a JPG image.
  */
 import { useMemo, useRef, useState } from "react";
 import { FileDown, Loader2 } from "lucide-react";
@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { BILL_FOOTER } from "@/lib/constants";
 import { formatDate, rs, todayIso } from "@/lib/format";
 import { useT } from "@/lib/i18n";
-import { shareNodeAsPdf } from "@/lib/share";
+import { shareNodeAsImage } from "@/lib/share";
 import type { Customer, LedgerEntry } from "@/lib/types";
 import { useSettings } from "@/lib/use-store";
 import { cn } from "@/lib/utils";
@@ -65,7 +65,7 @@ export function LedgerPdfDialog({ open, onOpenChange, customer, entries }: Props
     setBusy(true);
     try {
       const name = `${customer.name.replace(/\s+/g, "-")}-khata`;
-      await shareNodeAsPdf(node, name, `${customer.name} — ${t("ledgerPdf")}`);
+      await shareNodeAsImage(node, name, `${customer.name} — ${t("ledgerPdf")}`, "jpeg");
       toast.success(t("saved"));
       onOpenChange(false);
     } catch (err) {
@@ -127,7 +127,7 @@ export function LedgerPdfDialog({ open, onOpenChange, customer, entries }: Props
         <div ref={sheetRef} style={{ width: 760, background: "#ffffff", color: "#111827", padding: 28 }}>
           <div style={{ textAlign: "center" }}>
             <img
-              src={settings.logo || LOGO_URL}
+              src={LOGO_URL}
               alt=""
               style={{ height: 56, width: 56, objectFit: "contain", margin: "0 auto 8px" }}
             />

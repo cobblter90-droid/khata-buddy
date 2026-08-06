@@ -12,6 +12,13 @@ const config: CapacitorConfig = {
     CapacitorSQLite: {
       androidIsEncryption: false,
     },
+    Keyboard: {
+      // Resize the WebView body instead of the whole viewport: without this
+      // some OEM keyboards push the entire screen up when a field is focused.
+      resize: "body",
+      resizeOnFullScreen: true,
+    },
+
   },
 };
 

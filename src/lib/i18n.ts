@@ -162,22 +162,26 @@ export const DICT = {
   attachPhoto: { ur: "Bill ki photo", en: "Bill photo" },
   shareBalance: { ur: "Baqaya bhejein", en: "Share balance" },
   noTransactions: { ur: "Koi lain dain nahi.", en: "No transactions." },
-  ledgerPdf: { ur: "Khata PDF", en: "Ledger PDF" },
+  ledgerPdf: { ur: "Khata Image", en: "Ledger image" },
   wholeKhata: { ur: "Sara khata", en: "Whole ledger" },
   customDates: { ur: "Khaas tareekhein", en: "Custom dates" },
   fromDate: { ur: "Se", en: "From" },
   toDate: { ur: "Tak", en: "To" },
-  downloadPdf: { ur: "PDF download karein", en: "Download PDF" },
-  pdfFailed: { ur: "PDF nahi ban saka.", en: "Could not create PDF." },
+  downloadPdf: { ur: "Image download karein", en: "Download image" },
+  pdfFailed: { ur: "Image nahi ban saki.", en: "Could not create image." },
   customerNotFound: { ur: "Ye customer nahi mila.", en: "Customer not found." },
   contactsDenied: {
     ur: "Contacts ki ijazat nahi mili. Settings se ijazat dein.",
     en: "Contacts permission denied. Allow it from settings.",
   },
   contactsEmpty: { ur: "Contacts khali hain.", en: "No contacts found." },
-  contactsUnavailable: {
+  contactsWebOnly: {
     ur: "Contacts sirf mobile app mein kaam karte hain. Manually add karein.",
     en: "Contacts only work in the mobile app. Add manually instead.",
+  },
+  contactsFailed: {
+    ur: "Contacts kholne mein masla hua.",
+    en: "Could not open contacts.",
   },
   dueOn: { ur: "Tareekh", en: "Due" },
 
@@ -187,7 +191,6 @@ export const DICT = {
   businessName: { ur: "Karobar ka naam", en: "Business name" },
   businessPhone: { ur: "Phone", en: "Phone" },
   businessAddress: { ur: "Pata", en: "Address" },
-  logoUpload: { ur: "Logo lagayein", en: "Upload logo" },
   settingsTitle: { ur: "App Settings", en: "App settings" },
   language: { ur: "Zubaan", en: "Language" },
   wasoola: { ur: "Wasoola", en: "Recovery list" },
