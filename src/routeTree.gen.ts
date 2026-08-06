@@ -17,6 +17,7 @@ import { Route as ItemsRouteImport } from './routes/items'
 import { Route as KhataRouteImport } from './routes/khata'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as WasoolaRouteImport } from './routes/wasoola'
+import { Route as KhataIndexRouteImport } from './routes/khata.index'
 import { Route as KhataCustomerIdRouteImport } from './routes/khata.$customerId'
 import { Route as SaleSaleIdRouteImport } from './routes/sale.$saleId'
 
@@ -60,6 +61,11 @@ const WasoolaRoute = WasoolaRouteImport.update({
   path: '/wasoola',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KhataIndexRoute = KhataIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => KhataRoute,
+} as any)
 const KhataCustomerIdRoute = KhataCustomerIdRouteImport.update({
   id: '/$customerId',
   path: '/$customerId',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/wasoola': typeof WasoolaRoute
   '/khata/$customerId': typeof KhataCustomerIdRoute
   '/sale/$saleId': typeof SaleSaleIdRoute
+  '/khata/': typeof KhataIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -89,11 +96,11 @@ export interface FileRoutesByTo {
   '/bin': typeof BinRoute
   '/cashbook': typeof CashbookRoute
   '/items': typeof ItemsRoute
-  '/khata': typeof KhataRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/wasoola': typeof WasoolaRoute
   '/khata/$customerId': typeof KhataCustomerIdRoute
   '/sale/$saleId': typeof SaleSaleIdRoute
+  '/khata': typeof KhataIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +114,7 @@ export interface FileRoutesById {
   '/wasoola': typeof WasoolaRoute
   '/khata/$customerId': typeof KhataCustomerIdRoute
   '/sale/$saleId': typeof SaleSaleIdRoute
+  '/khata/': typeof KhataIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +129,7 @@ export interface FileRouteTypes {
     | '/wasoola'
     | '/khata/$customerId'
     | '/sale/$saleId'
+    | '/khata/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -128,11 +137,11 @@ export interface FileRouteTypes {
     | '/bin'
     | '/cashbook'
     | '/items'
-    | '/khata'
     | '/privacy'
     | '/wasoola'
     | '/khata/$customerId'
     | '/sale/$saleId'
+    | '/khata'
   id:
     | '__root__'
     | '/'
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
     | '/wasoola'
     | '/khata/$customerId'
     | '/sale/$saleId'
+    | '/khata/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -217,6 +227,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WasoolaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/khata/': {
+      id: '/khata/'
+      path: '/'
+      fullPath: '/khata/'
+      preLoaderRoute: typeof KhataIndexRouteImport
+      parentRoute: typeof KhataRoute
+    }
     '/khata/$customerId': {
       id: '/khata/$customerId'
       path: '/$customerId'
@@ -236,10 +253,12 @@ declare module '@tanstack/react-router' {
 
 interface KhataRouteChildren {
   KhataCustomerIdRoute: typeof KhataCustomerIdRoute
+  KhataIndexRoute: typeof KhataIndexRoute
 }
 
 const KhataRouteChildren: KhataRouteChildren = {
   KhataCustomerIdRoute: KhataCustomerIdRoute,
+  KhataIndexRoute: KhataIndexRoute,
 }
 
 const KhataRouteWithChildren = KhataRoute._addFileChildren(KhataRouteChildren)
