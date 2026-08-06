@@ -106,8 +106,14 @@ export function AppShell({ children }: { children: ReactNode }) {
     return () => document.removeEventListener("visibilitychange", onHide);
   }, []);
 
+  // Update banner: ask Command Center for the latest published version.
+  useEffect(() => {
+    if (phase !== "ready") return;
+    void (async () => setUpdate(await checkAppVersion()))();
+  }, [phase]);
 
   if (phase === "loading") {
+
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-6 w-6 animate-spin text-primary" />
