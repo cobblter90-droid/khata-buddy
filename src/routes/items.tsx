@@ -1,16 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { AlertTriangle, Pencil, Plus, Trash2 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { AlertTriangle, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { ItemDialog } from "@/components/item-dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import * as db from "@/lib/db";
 import { rs } from "@/lib/format";
 import { useT } from "@/lib/i18n";
 import type { Item } from "@/lib/types";
 import { unitLabel } from "@/lib/units";
 import { useCollection } from "@/lib/use-store";
+
 
 export const Route = createFileRoute("/items")({
   head: () => ({
