@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BILL_FOOTER } from "@/lib/constants";
 import * as db from "@/lib/db";
-import { formatDate, rs, todayIso, toNumber } from "@/lib/format";
+import { formatDate, rs, todayIso } from "@/lib/format";
 import { useT } from "@/lib/i18n";
 import type { CashbookEntry } from "@/lib/types";
 import { useCollection } from "@/lib/use-store";
