@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { ArrowLeft, FileText, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 
+import { LOGO_URL } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { BILL_FOOTER } from "@/lib/constants";
 import { formatDateTime, rs } from "@/lib/format";
