@@ -83,12 +83,15 @@ export function LedgerDialog({ open, onOpenChange, customerId, kind }: Props) {
             <Label htmlFor="led-amount">{t("amount")}</Label>
             <Input
               id="led-amount"
-              inputMode="decimal"
+              inputMode="none"
+              readOnly
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onFocus={(e) => e.currentTarget.blur()}
+              onMouseDown={(e) => e.preventDefault()}
               placeholder="0"
-              className="tabular h-12 text-center text-xl font-bold"
+              className="tabular h-12 cursor-default text-center text-xl font-bold"
             />
+
             <p className="tabular text-center text-xs text-muted-foreground">
               {rs(evalExpression(amount))}
             </p>
