@@ -80,6 +80,8 @@ export const DICT = {
   saleSaved: { ur: "Sale save ho gayi.", en: "Sale saved." },
 
   searchCustomer: { ur: "Customer talash karein…", en: "Search customer…" },
+  searchItem: { ur: "Item talash karein…", en: "Search item…" },
+  noItemMatch: { ur: "Koi item nahi mila", en: "No item found" },
   addNewCustomer: { ur: "Naya customer banayein", en: "Add new customer" },
   customerRequired: {
     ur: "Udhaar ke liye customer zaroori hai.",
