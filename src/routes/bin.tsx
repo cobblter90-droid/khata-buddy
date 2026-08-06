@@ -24,7 +24,7 @@ export const Route = createFileRoute("/bin")({
   component: BinPage,
 });
 
-type Row = BaseDoc & { collection: Collection; label: string; amount?: number };
+type Row = BaseDoc & { collection: Collection; label: string; amount?: number | undefined };
 
 function labelOf(collection: Collection, doc: Record<string, unknown>): string {
   const name = doc["name"] ?? doc["invoiceNo"] ?? doc["note"] ?? doc["kind"];
