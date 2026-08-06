@@ -30,11 +30,12 @@ export function CustomerPicker({ value, onChange }: Props) {
 
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return customers.slice(0, 6);
+    if (!q) return [];
     return customers
       .filter((c) => `${c.name} ${c.phone}`.toLowerCase().includes(q))
       .slice(0, 8);
   }, [customers, query]);
+
 
   async function importContacts() {
     setLoading(true);
@@ -195,31 +196,34 @@ export function CustomerPicker({ value, onChange }: Props) {
         />
       </div>
 
-      {matches.length > 0 ? (
-        <ul className="space-y-1.5">
-          {matches.map((c) => (
-            <li key={c.id}>
-              <button
-                type="button"
-                onClick={() => onChange(c)}
-                className="flex w-full items-center gap-3 rounded-xl border border-border bg-card px-3 py-2.5 text-left"
-              >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-bold text-secondary-foreground">
-                  {(c.name || "?").slice(0, 1).toUpperCase()}
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-semibold">{c.name}</span>
-                  <span className="tabular block text-xs text-muted-foreground">
-                    {c.phone || "—"}
+      {query.trim() ? (
+        matches.length > 0 ? (
+          <ul className="space-y-1.5">
+            {matches.map((c) => (
+              <li key={c.id}>
+                <button
+                  type="button"
+                  onClick={() => onChange(c)}
+                  className="flex w-full items-center gap-3 rounded-xl border border-border bg-card px-3 py-2.5 text-left"
+                >
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-bold text-secondary-foreground">
+                    {(c.name || "?").slice(0, 1).toUpperCase()}
                   </span>
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="px-1 text-xs text-muted-foreground">{t("noCustomerMatch")}</p>
-      )}
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-semibold">{c.name}</span>
+                    <span className="tabular block text-xs text-muted-foreground">
+                      {c.phone || "—"}
+                    </span>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="px-1 text-xs text-muted-foreground">{t("noCustomerMatch")}</p>
+        )
+      ) : null}
+
 
       <Button
         type="button"
