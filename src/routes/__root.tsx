@@ -91,7 +91,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Offline bookkeeping for shopkeepers: sales, udhaar khata, item catalog and shareable bills.",
       },
       { name: "author", content: "U&R Developers" },
-      { name: "theme-color", content: "#1f4c3a" },
+      { name: "theme-color", content: "#22262E" },
       { property: "og:title", content: "Assan Khata By U&R" },
       {
         property: "og:description",
