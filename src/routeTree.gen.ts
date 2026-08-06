@@ -10,33 +10,73 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AccountRouteImport } from './routes/account'
+import { Route as ItemsRouteImport } from './routes/items'
+import { Route as KhataRouteImport } from './routes/khata'
+import { Route as SaleSaleIdRouteImport } from './routes/sale.$saleId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ItemsRoute = ItemsRouteImport.update({
+  id: '/items',
+  path: '/items',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KhataRoute = KhataRouteImport.update({
+  id: '/khata',
+  path: '/khata',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SaleSaleIdRoute = SaleSaleIdRouteImport.update({
+  id: '/sale/$saleId',
+  path: '/sale/$saleId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
+  '/items': typeof ItemsRoute
+  '/khata': typeof KhataRoute
+  '/sale/$saleId': typeof SaleSaleIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
+  '/items': typeof ItemsRoute
+  '/khata': typeof KhataRoute
+  '/sale/$saleId': typeof SaleSaleIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
+  '/items': typeof ItemsRoute
+  '/khata': typeof KhataRoute
+  '/sale/$saleId': typeof SaleSaleIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/account' | '/items' | '/khata' | '/sale/$saleId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/account' | '/items' | '/khata' | '/sale/$saleId'
+  id: '__root__' | '/' | '/account' | '/items' | '/khata' | '/sale/$saleId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountRoute: typeof AccountRoute
+  ItemsRoute: typeof ItemsRoute
+  KhataRoute: typeof KhataRoute
+  SaleSaleIdRoute: typeof SaleSaleIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +88,44 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/items': {
+      id: '/items'
+      path: '/items'
+      fullPath: '/items'
+      preLoaderRoute: typeof ItemsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/khata': {
+      id: '/khata'
+      path: '/khata'
+      fullPath: '/khata'
+      preLoaderRoute: typeof KhataRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sale/$saleId': {
+      id: '/sale/$saleId'
+      path: '/sale/$saleId'
+      fullPath: '/sale/$saleId'
+      preLoaderRoute: typeof SaleSaleIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountRoute: AccountRoute,
+  ItemsRoute: ItemsRoute,
+  KhataRoute: KhataRoute,
+  SaleSaleIdRoute: SaleSaleIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
