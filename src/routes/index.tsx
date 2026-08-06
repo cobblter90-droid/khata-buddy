@@ -160,7 +160,14 @@ function SalesPage() {
                 tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
                 interval="preserveStartEnd"
               />
-              <YAxis tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} width={44} />
+              <YAxis
+                tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
+                width={40}
+                tickFormatter={(value: number) =>
+                  value >= 1000 ? `${Math.round(value / 100) / 10}k` : String(value)
+                }
+              />
+
               <Tooltip
                 contentStyle={{
                   background: "var(--popover)",
