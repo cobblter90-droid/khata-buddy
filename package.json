@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "build:mobile": "MOBILE=1 vite build && node scripts/build-mobile.mjs",
+    "build:mobile": "MOBILE=1 vite build && node scripts/build-mobile.mjs"
   },
   "dependencies": {
     "@capacitor-community/contacts": "^8.0.0",
