@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState, type ReactNode } from "react";
-import { Loader2, WifiOff } from "lucide-react";
+import { Download, Loader2, WifiOff } from "lucide-react";
 
 import { ActivationScreen } from "@/components/activation-screen";
 import { AppLock } from "@/components/app-lock";
 import { LockedScreen } from "@/components/locked-screen";
 import { TabBar } from "@/components/tab-bar";
+import { checkAppVersion, type UpdateInfo } from "@/lib/app-version";
 import { initDb } from "@/lib/db";
 import { LangContext, translate } from "@/lib/i18n";
 import {
@@ -18,6 +19,7 @@ import { useSettings } from "@/lib/use-store";
 type Phase = "loading" | "activation" | "ready" | "locked";
 
 const RECHECK_MS = 5 * 60 * 1000;
+
 
 export function AppShell({ children }: { children: ReactNode }) {
   const [phase, setPhase] = useState<Phase>("loading");
