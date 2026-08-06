@@ -99,7 +99,7 @@ export function LedgerDialog({ open, onOpenChange, customerId, kind }: Props) {
             <Input id="led-note" value={note} onChange={(e) => setNote(e.target.value)} />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-3">
             <div className="space-y-2">
               <Label htmlFor="led-date">{t("date")}</Label>
               <Input
@@ -107,6 +107,7 @@ export function LedgerDialog({ open, onOpenChange, customerId, kind }: Props) {
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
+                className="tabular h-12 w-full"
               />
             </div>
             <div className="space-y-2">
@@ -116,6 +117,7 @@ export function LedgerDialog({ open, onOpenChange, customerId, kind }: Props) {
                 type="date"
                 value={reminder}
                 onChange={(e) => setReminder(e.target.value)}
+                className="tabular h-12 w-full"
               />
             </div>
           </div>
