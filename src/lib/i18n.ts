@@ -129,6 +129,8 @@ export const DICT = {
 
   // Update banner
   download: { ur: "Download", en: "Download" },
+  updateAvailable: { ur: "Nayi update mojood hai", en: "Update available" },
+
 
   offline: { ur: "Offline", en: "Offline" },
 
