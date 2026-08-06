@@ -9,14 +9,20 @@ function isNative(): boolean {
   return Boolean((window as any).Capacitor?.isNativePlatform?.());
 }
 
-async function nodeToCanvas(node: HTMLElement) {
-  const { default: html2canvas } = await import("html2canvas");
-  return html2canvas(node, {
+/**
+ * Renders a node to a canvas. Uses html-to-image (SVG foreignObject) because
+ * html2canvas cannot parse modern `oklch()` colors used by the theme.
+ */
+async function nodeToCanvas(node: HTMLElement): Promise<HTMLCanvasElement> {
+  const { toCanvas } = await import("html-to-image");
+  return toCanvas(node, {
     backgroundColor: "#ffffff",
-    scale: Math.min(3, Math.max(2, window.devicePixelRatio || 2)),
-    useCORS: true,
+    pixelRatio: Math.min(3, Math.max(2, window.devicePixelRatio || 2)),
+    cacheBust: true,
+    skipFonts: true,
   });
 }
+
 
 function stripDataUrl(dataUrl: string) {
   return dataUrl.slice(dataUrl.indexOf(",") + 1);
