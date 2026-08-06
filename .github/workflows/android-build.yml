@@ -121,13 +121,38 @@ jobs:
           chmod +x ./gradlew
           ./gradlew assembleDebug --no-daemon
 
+      # Verification only — never fail the build. Modern APKs are signed with
+      # v2/v3 scheme only, so `keytool -printcert -jarfile` (v1/JAR signatures)
+      # often finds nothing; apksigner is the correct tool.
       - name: Print APK signing certificate (must be identical across runs)
+        continue-on-error: true
         run: |
-          APK=$(ls android/app/build/outputs/apk/debug/*.apk | head -n1)
+          set +e
+          APK=$(ls -1 android/app/build/outputs/apk/debug/*.apk 2>/dev/null | head -n1)
+          if [ -z "$APK" ]; then
+            echo "::warning::no debug APK found to inspect — skipping certificate print"
+            exit 0
+          fi
           echo "APK: $APK"
-          keytool -printcert -jarfile "$APK" | grep -E "Owner|SHA256:"
-          echo "expected SHA256 fingerprint:"
-          keytool -list -v -keystore android-resources/debug.keystore -storepass android | grep "SHA256:"
+
+          APKSIGNER=$(ls -1 "$ANDROID_HOME"/build-tools/*/apksigner 2>/dev/null | sort -V | tail -n1)
+          if [ -n "$APKSIGNER" ]; then
+            echo "--- apksigner ---"
+            "$APKSIGNER" verify --print-certs "$APK" | grep -Ei "Signer #1 certificate (DN|SHA-256)" \
+              || echo "::warning::apksigner could not print certificates"
+          else
+            echo "::warning::apksigner not found in ANDROID_HOME/build-tools"
+          fi
+
+          echo "--- keytool (v1/JAR signature, may be absent) ---"
+          keytool -printcert -jarfile "$APK" 2>/dev/null | grep -E "Owner|SHA256:" \
+            || echo "::warning::keytool found no JAR (v1) signature — expected for v2/v3-only APKs"
+
+          echo "--- expected fingerprint from committed keystore ---"
+          keytool -list -v -keystore android-resources/debug.keystore -storepass android | grep "SHA256:" \
+            || echo "::warning::could not read committed keystore fingerprint"
+          exit 0
+
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
