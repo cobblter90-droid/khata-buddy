@@ -88,7 +88,7 @@ function SaleInvoicePage() {
       <div ref={billRef} className="rounded-2xl bg-card p-5 text-card-foreground shadow-card">
         <div className="text-center">
           <img
-            src={settings.logo || LOGO_URL}
+            src={LOGO_URL}
             alt={settings.businessName || "Assan Khata"}
             className="mx-auto mb-2 h-14 w-14 rounded-xl object-contain"
           />

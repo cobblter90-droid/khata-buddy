@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import * as db from "@/lib/db";
+import { loadContacts } from "@/lib/contacts";
 import { useT } from "@/lib/i18n";
 import type { Customer } from "@/lib/types";
 
