@@ -144,25 +144,33 @@ function SaleInvoicePage() {
           </p>
         ) : null}
 
-        <div className="mt-3 space-y-1 border-t border-border pt-2 text-sm">
+        {/* Totals block. Flex rows (grid does not survive the image export
+            renderer) with non-wrapping values and explicit line boxes: a wider
+            fallback font can no longer reflow a label onto a second line and
+            collide with the row below. */}
+        <div className="mt-3 space-y-1.5 border-t border-border pt-2 text-sm">
           {sale.discount > 0 ? <Row label={t("total")} value={rs(subtotal)} /> : null}
 
           {sale.discount > 0 ? <Row label={t("discount")} value={`- ${rs(sale.discount)}`} /> : null}
-          <div className="flex justify-between text-base font-bold">
-            <span>{t("grandTotal")}</span>
-            <span className="tabular">{rs(sale.total)}</span>
+          <div className="flex items-baseline justify-between gap-3 text-base font-bold leading-7">
+            <span className="min-w-0 truncate whitespace-nowrap">{t("grandTotal")}</span>
+            <span className="tabular shrink-0 whitespace-nowrap">{rs(sale.total)}</span>
           </div>
           {sale.customerName ? (
-            <div className="flex justify-between text-xs">
-              <span>{t("customer")}</span>
-              <span className="font-bold">{sale.customerName}</span>
+            <div className="flex items-baseline justify-between gap-3 text-xs leading-5">
+              <span className="shrink-0 whitespace-nowrap">{t("customer")}</span>
+              <span className="min-w-0 truncate font-bold">{sale.customerName}</span>
             </div>
           ) : null}
-          <div className="flex justify-between text-xs">
-            <span>{t("paymentMode")}</span>
-            <span className="font-bold">{sale.mode === "cash" ? t("cash") : t("credit")}</span>
+          <div className="flex items-baseline justify-between gap-3 text-xs leading-5">
+            <span className="shrink-0 whitespace-nowrap">{t("paymentMode")}</span>
+            <span className="shrink-0 whitespace-nowrap font-bold">
+              {sale.mode === "cash" ? t("cash") : t("credit")}
+            </span>
           </div>
         </div>
+
+
 
         <p className="mt-5 border-t border-border pt-3 text-center text-[10px] font-semibold leading-relaxed text-muted-foreground">
           {BILL_FOOTER}
@@ -203,9 +211,9 @@ function SaleInvoicePage() {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between text-xs">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="tabular">{value}</span>
+    <div className="flex items-baseline justify-between gap-3 text-xs leading-5">
+      <span className="min-w-0 truncate whitespace-nowrap text-muted-foreground">{label}</span>
+      <span className="tabular shrink-0 whitespace-nowrap">{value}</span>
     </div>
   );
 }

@@ -128,7 +128,6 @@ export const DICT = {
   deleted: { ur: "Delete kar diya.", en: "Deleted." },
 
   // Update banner
-  updateAvailable: { ur: "Nai update maujood hai", en: "Update available" },
   download: { ur: "Download", en: "Download" },
 
   offline: { ur: "Offline", en: "Offline" },
@@ -206,7 +205,8 @@ export const DICT = {
   backup: { ur: "Backup", en: "Backup" },
   exportBackup: { ur: "Backup file banayein", en: "Export backup" },
   importBackup: { ur: "Backup wapas lein", en: "Import backup" },
-  backupDone: { ur: "Backup file ban gayi.", en: "Backup file created." },
+  backupDone: { ur: "Backup file mehfooz ho gayi:", en: "Backup file saved:" },
+  backupFailed: { ur: "Backup file nahi ban saki.", en: "Could not save the backup file." },
   importDone: { ur: "Backup wapas aa gaya.", en: "Backup restored." },
   importFailed: { ur: "Ye file theek nahi lagti.", en: "That file looks invalid." },
   privacy: { ur: "Privacy Policy", en: "Privacy Policy" },

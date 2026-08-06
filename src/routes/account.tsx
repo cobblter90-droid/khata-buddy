@@ -20,6 +20,7 @@ import { Switch } from "@/components/ui/switch";
 import { APP_VERSION, BILL_FOOTER, SUPPORT_LINE } from "@/lib/constants";
 import * as db from "@/lib/db";
 import { useT } from "@/lib/i18n";
+import { saveTextFile } from "@/lib/share";
 import { useSettings, saveSettings } from "@/lib/use-store";
 
 export const Route = createFileRoute("/account")({
@@ -57,17 +58,22 @@ function AccountPage() {
   const [pin, setPin] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  function exportBackup() {
-    const blob = new Blob([JSON.stringify(db.exportSnapshot(), null, 2)], {
-      type: "application/json",
-    });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `assan-khata-backup-${new Date().toISOString().slice(0, 10)}.json`;
-    link.click();
-    URL.revokeObjectURL(link.href);
-    toast.success(t("backupDone"));
+  async function exportBackup() {
+    try {
+      const fileName = `assan-khata-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      const where = await saveTextFile(
+        fileName,
+        JSON.stringify(db.exportSnapshot(), null, 2),
+        "application/json",
+        fileName,
+      );
+      toast.success(`${t("backupDone")} ${where}`);
+    } catch (err) {
+      console.error(err);
+      toast.error(t("backupFailed"));
+    }
   }
+
 
   function importBackup(file: File | undefined) {
     if (!file) return;
@@ -193,14 +199,20 @@ function AccountPage() {
           </div>
         ) : null}
 
+        {/* Auto-height rows with wrapping labels: the Urdu strings are long and
+            were spilling out of the fixed-height buttons on narrow phones. */}
         <div className="mt-4 grid grid-cols-2 gap-2">
-          <Button variant="outline" onClick={exportBackup}>
-            <Download className="mr-1 h-4 w-4" />
-            {t("exportBackup")}
+          <Button
+            variant="outline"
+            onClick={() => void exportBackup()}
+            className="h-auto min-h-11 w-full items-center justify-center gap-1.5 whitespace-normal px-2 py-2 text-center text-xs leading-tight"
+          >
+            <Download className="h-4 w-4 shrink-0" />
+            <span className="min-w-0">{t("exportBackup")}</span>
           </Button>
-          <label className="flex h-9 cursor-pointer items-center justify-center gap-1 rounded-md border border-border px-3 text-sm font-medium">
-            <FileUp className="h-4 w-4" />
-            {t("importBackup")}
+          <label className="flex min-h-11 w-full cursor-pointer items-center justify-center gap-1.5 rounded-md border border-border px-2 py-2 text-center text-xs font-medium leading-tight">
+            <FileUp className="h-4 w-4 shrink-0" />
+            <span className="min-w-0">{t("importBackup")}</span>
             <input
               type="file"
               accept="application/json"
@@ -209,6 +221,7 @@ function AccountPage() {
             />
           </label>
         </div>
+
       </section>
 
       {/* Links */}
