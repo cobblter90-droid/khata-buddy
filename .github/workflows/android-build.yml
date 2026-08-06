@@ -25,12 +25,19 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Environment info
+        run: |
+          node -v && npm -v && java -version
+
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      # 1) Build the static SPA web output FIRST — must land in ./dist (== webDir).
+      # 1) Build the static SPA web output FIRST — must land in dist/client (== webDir).
       - name: Build web app
         run: npm run build:mobile
+        env:
+          CI: "true"
+          NODE_OPTIONS: --max-old-space-size=4096
 
       - name: Verify web output matches webDir in capacitor.config.ts
         run: |
