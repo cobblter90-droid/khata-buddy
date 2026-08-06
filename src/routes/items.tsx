@@ -42,9 +42,10 @@ function ItemsPage() {
 
   const q = query.trim().toLowerCase();
   const filtered = useMemo(() => {
-    if (!q) return [];
+    if (!q) return items.slice(-5).reverse();
     return items.filter((i) => i.name.toLowerCase().includes(q));
   }, [items, q]);
+
 
   return (
     <div className="px-4 pb-6">
@@ -79,7 +80,7 @@ function ItemsPage() {
         <p className="rounded-2xl border border-dashed border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
           {t("noItems")}
         </p>
-      ) : !q ? null : filtered.length === 0 ? (
+      ) : filtered.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
           {t("noItemMatch")}
         </p>
