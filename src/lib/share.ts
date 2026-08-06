@@ -37,12 +37,20 @@ async function shareBase64(base64: string, fileName: string, mime: string, title
     await Share.share({ title, text: title, files: [uri] });
     return;
   }
-  // Web fallback: download the file so the flow is testable in the browser.
+  // Web fallback: download via a blob URL (data: URLs can navigate instead).
+  const bin = atob(base64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i += 1) bytes[i] = bin.charCodeAt(i);
+  const url = URL.createObjectURL(new Blob([bytes], { type: mime }));
   const link = document.createElement("a");
-  link.href = `data:${mime};base64,${base64}`;
+  link.href = url;
   link.download = fileName;
+  document.body.appendChild(link);
   link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
 }
+
 
 export async function shareNodeAsImage(
   node: HTMLElement,
