@@ -181,14 +181,14 @@ function SalesPage() {
                 dataKey="cash"
                 name={t("cash")}
                 fill="var(--cash)"
-                radius={[4, 4, 0, 0]}
+                radius={[8, 8, 0, 0]}
                 stackId="a"
               />
               <Bar
                 dataKey="credit"
                 name={t("credit")}
                 fill="var(--credit)"
-                radius={[4, 4, 0, 0]}
+                radius={[8, 8, 0, 0]}
                 stackId="a"
               />
             </BarChart>

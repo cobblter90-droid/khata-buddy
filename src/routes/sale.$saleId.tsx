@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { ArrowLeft, FileText, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 
+import { LOGO_URL } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { BILL_FOOTER } from "@/lib/constants";
 import { formatDateTime, rs } from "@/lib/format";
@@ -83,13 +84,11 @@ function SaleInvoicePage() {
           image and PDF look like a real receipt. */}
       <div ref={billRef} className="rounded-2xl bg-card p-5 text-card-foreground shadow-card">
         <div className="text-center">
-          {settings.logo ? (
-            <img
-              src={settings.logo}
-              alt={settings.businessName || "Logo"}
-              className="mx-auto mb-2 h-14 w-14 rounded-xl object-cover"
-            />
-          ) : null}
+          <img
+            src={settings.logo || LOGO_URL}
+            alt={settings.businessName || "Assan Khata"}
+            className="mx-auto mb-2 h-14 w-14 rounded-xl object-contain"
+          />
           <p className="text-lg font-bold">{settings.businessName || t("appName")}</p>
           {settings.businessPhone ? (
             <p className="text-xs text-muted-foreground">{settings.businessPhone}</p>

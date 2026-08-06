@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { UserCog } from "lucide-react";
+import { Logo } from "@/components/logo";
 
 export const Route = createFileRoute("/account")({
   head: () => ({
@@ -23,11 +23,14 @@ export const Route = createFileRoute("/account")({
 
 function AccountPage() {
   return (
-    <div className="px-4 py-16 text-center">
-      <UserCog className="mx-auto h-10 w-10 text-muted-foreground" />
-      <h1 className="mt-4 text-xl font-bold">Account</h1>
-      <p className="mx-auto mt-2 max-w-xs text-sm text-muted-foreground">
-        Settings, Cashbook, Wasooli aur Backup agle phase mein.
+    <div className="px-4 py-14 text-center">
+      <Logo className="mx-auto h-24 w-24 rounded-3xl shadow-raised" />
+      <h1 className="mt-5 text-xl font-bold">Assan Khata</h1>
+      <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+        By U&amp;R Developers
+      </p>
+      <p className="mx-auto mt-4 max-w-xs text-sm text-muted-foreground">
+        Karobar ki maloomat, Cashbook, Wasooli aur Backup agle phase mein.
       </p>
     </div>
   );

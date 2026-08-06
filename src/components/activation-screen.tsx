@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { KeyRound, Loader2, ShieldAlert } from "lucide-react";
+import { Loader2, ShieldAlert } from "lucide-react";
 
+import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -52,11 +53,9 @@ export function ActivationScreen({ onActivated, onLocked }: Props) {
     <div className="flex min-h-screen flex-col justify-center bg-background px-5 py-10">
       <div className="mx-auto w-full max-w-sm">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-primary text-primary-foreground shadow-raised">
-            <KeyRound className="h-7 w-7" />
-          </div>
+          <Logo className="mx-auto mb-4 h-24 w-24 rounded-3xl shadow-raised" />
           <h1 className="text-2xl font-bold text-foreground">{t("appName")}</h1>
-          <p className="text-xs font-semibold uppercase tracking-widest text-brass">
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             {t("appTagline")}
           </p>
         </div>
