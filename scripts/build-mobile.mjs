@@ -1,24 +1,39 @@
 // Generates the static SPA shell for the Capacitor Android build.
-// Runs after `vite build`: preferred path boots the built server entry in-process
-// and renders the shell HTML. If that fails for any reason (missing env vars in CI,
-// SSR-only crash, etc.) we fall back to composing a minimal shell from the built
-// client assets, so the mobile build never depends on a working SSR render.
-import { writeFileSync, existsSync, readdirSync, readFileSync } from "node:fs";
+// The Vite/Nitro build output location differs by preset (.output/public for the
+// cloudflare-module/nitro preset, dist/client for the plain client build), so we
+// detect it, write the shell there, and mirror everything into .output/public,
+// which is what capacitor.config.ts uses as webDir.
+import {
+  writeFileSync,
+  existsSync,
+  readdirSync,
+  readFileSync,
+  mkdirSync,
+  cpSync,
+} from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
 const root = process.cwd();
-const serverEntry = resolve(root, "dist/server/index.mjs");
-const clientDir = resolve(root, "dist/client");
+const WEB_DIR = resolve(root, ".output/public");
+
+const clientCandidates = [".output/public", "dist/client"].map((p) => resolve(root, p));
+const clientDir = clientCandidates.find((dir) => existsSync(resolve(dir, "assets")));
+
+if (!clientDir) {
+  throw new Error(
+    `Could not find built client assets in any of: ${clientCandidates.join(", ")}. Run \`vite build\` first.`,
+  );
+}
 const assetsDir = resolve(clientDir, "assets");
 
-if (!existsSync(assetsDir)) {
-  throw new Error(`Missing ${assetsDir}. Run \`vite build\` first.`);
-}
+const serverEntry = [".output/server/index.mjs", "dist/server/index.mjs"]
+  .map((p) => resolve(root, p))
+  .find((p) => existsSync(p));
 
 async function renderWithServer() {
-  if (!existsSync(serverEntry)) {
-    throw new Error(`Missing ${serverEntry}`);
+  if (!serverEntry) {
+    throw new Error("No built server entry found");
   }
   const mod = await import(pathToFileURL(serverEntry).toString());
   const app = mod.default;
@@ -61,7 +76,9 @@ try {
   html = await renderWithServer();
 } catch (error) {
   source = "fallback";
-  console.warn(`[build-mobile] SSR shell render failed (${error.message}); using static fallback shell.`);
+  console.warn(
+    `[build-mobile] SSR shell render failed (${error.message}); using static fallback shell.`,
+  );
   html = buildFallbackShell();
 }
 
@@ -69,12 +86,18 @@ for (const file of ["index.html", "200.html"]) {
   writeFileSync(resolve(clientDir, file), html);
 }
 
+// Mirror into webDir (.output/public) when the build landed somewhere else.
+if (clientDir !== WEB_DIR) {
+  mkdirSync(WEB_DIR, { recursive: true });
+  cpSync(clientDir, WEB_DIR, { recursive: true });
+}
+
 // Sanity check: the shell must reference at least one built script.
-const written = readFileSync(resolve(clientDir, "index.html"), "utf8");
+const written = readFileSync(resolve(WEB_DIR, "index.html"), "utf8");
 if (!/src="\/assets\/[^"]+\.js"/.test(written)) {
   throw new Error("Generated shell does not reference a built client script");
 }
 
 console.log(
-  `Wrote SPA shell (${html.length} bytes, source: ${source}) to dist/client/index.html and 200.html`,
+  `Wrote SPA shell (${html.length} bytes, source: ${source}) from ${clientDir} to .output/public/index.html and 200.html`,
 );
