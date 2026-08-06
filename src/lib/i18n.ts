@@ -162,6 +162,13 @@ export const DICT = {
   attachPhoto: { ur: "Bill ki photo", en: "Bill photo" },
   shareBalance: { ur: "Baqaya bhejein", en: "Share balance" },
   noTransactions: { ur: "Koi lain dain nahi.", en: "No transactions." },
+  ledgerPdf: { ur: "Khata PDF", en: "Ledger PDF" },
+  wholeKhata: { ur: "Sara khata", en: "Whole ledger" },
+  customDates: { ur: "Khaas tareekhein", en: "Custom dates" },
+  fromDate: { ur: "Se", en: "From" },
+  toDate: { ur: "Tak", en: "To" },
+  downloadPdf: { ur: "PDF download karein", en: "Download PDF" },
+  pdfFailed: { ur: "PDF nahi ban saka.", en: "Could not create PDF." },
   customerNotFound: { ur: "Ye customer nahi mila.", en: "Customer not found." },
   contactsDenied: {
     ur: "Contacts ki ijazat nahi mili. Settings se ijazat dein.",
