@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, CalendarClock, Send, Trash2 } from "lucide-react";
+import { ArrowLeft, CalendarClock, FileDown, Send, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { LedgerDialog } from "@/components/ledger-dialog";
+import { LedgerPdfDialog } from "@/components/ledger-pdf-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BILL_FOOTER } from "@/lib/constants";
@@ -42,6 +43,7 @@ function CustomerPage() {
   const customer = useDoc<Customer>("customers", customerId);
   const allEntries = useCollection<LedgerEntry>("ledger");
   const [dialog, setDialog] = useState<"diye" | "liye" | null>(null);
+  const [pdfOpen, setPdfOpen] = useState(false);
 
   if (!customer || customer.deletedAt) {
     return (
@@ -96,6 +98,10 @@ function CustomerPage() {
           <h1 className="truncate text-lg font-bold">{customer.name}</h1>
           <p className="tabular text-xs text-muted-foreground">{customer.phone || "—"}</p>
         </div>
+        <Button size="sm" variant="outline" onClick={() => setPdfOpen(true)}>
+          <FileDown className="mr-1 h-4 w-4" />
+          PDF
+        </Button>
         <Button size="sm" variant="outline" onClick={() => void share()}>
           <Send className="mr-1 h-4 w-4" />
           {t("shareBalance")}
@@ -204,6 +210,15 @@ function CustomerPage() {
       )}
 
       <p className="mt-6 text-center text-[10px] text-muted-foreground">{BILL_FOOTER}</p>
+
+      {pdfOpen ? (
+        <LedgerPdfDialog
+          open
+          onOpenChange={setPdfOpen}
+          customer={customer}
+          entries={entries}
+        />
+      ) : null}
 
       {dialog ? (
         <LedgerDialog
