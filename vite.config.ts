@@ -7,7 +7,7 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 // `MOBILE=1 vite build` produces a static SPA shell for the Capacitor Android build.
-const isMobileBuild = process.env.MOBILE === "1";
+const isMobileBuild = process.env["MOBILE"] === "1";
 
 export default defineConfig({
   tanstackStart: {
@@ -18,7 +18,7 @@ export default defineConfig({
       ? {
           spa: {
             enabled: true,
-            prerender: { enabled: true, outputPath: "/", crawlLinks: false, retryCount: 0 },
+            prerender: { enabled: false, outputPath: "/", crawlLinks: false, retryCount: 0 },
           },
         }
       : {}),
