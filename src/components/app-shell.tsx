@@ -24,7 +24,9 @@ const RECHECK_MS = 5 * 60 * 1000;
 export function AppShell({ children }: { children: ReactNode }) {
   const [phase, setPhase] = useState<Phase>("loading");
   const [offline, setOffline] = useState(false);
+  const [update, setUpdate] = useState<UpdateInfo | null>(null);
   const [unlocked, setUnlocked] = useState(false);
+
   const settings = useSettings();
   const lang = settings.language;
 
