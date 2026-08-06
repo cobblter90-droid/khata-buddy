@@ -12,16 +12,42 @@ function isNative(): boolean {
 /**
  * Renders a node to a canvas. Uses html-to-image (SVG foreignObject) because
  * html2canvas cannot parse modern `oklch()` colors used by the theme.
+ *
+ * The rasterised PNG is re-drawn onto a fresh canvas with an identity
+ * transform: some Android WebViews hand back a flipped/mirrored bitmap when
+ * the foreignObject image is decoded, and re-drawing normalises orientation.
  */
 async function nodeToCanvas(node: HTMLElement): Promise<HTMLCanvasElement> {
-  const { toCanvas } = await import("html-to-image");
-  return toCanvas(node, {
+  const { toPng } = await import("html-to-image");
+  const pixelRatio = Math.min(3, Math.max(2, window.devicePixelRatio || 2));
+  const dataUrl = await toPng(node, {
     backgroundColor: "#ffffff",
-    pixelRatio: Math.min(3, Math.max(2, window.devicePixelRatio || 2)),
+    pixelRatio,
     cacheBust: true,
     skipFonts: true,
+    width: node.offsetWidth,
+    height: node.offsetHeight,
   });
+
+  const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const el = new Image();
+    el.onload = () => resolve(el);
+    el.onerror = () => reject(new Error("bill image decode failed"));
+    el.src = dataUrl;
+  });
+
+  const canvas = document.createElement("canvas");
+  canvas.width = img.naturalWidth || Math.round(node.offsetWidth * pixelRatio);
+  canvas.height = img.naturalHeight || Math.round(node.offsetHeight * pixelRatio);
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("canvas unavailable");
+  ctx.setTransform(1, 0, 0, 1, 0, 0); // never inherit a flipped transform
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  return canvas;
 }
+
 
 
 function stripDataUrl(dataUrl: string) {

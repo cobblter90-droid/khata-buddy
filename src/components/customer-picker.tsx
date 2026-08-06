@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import * as db from "@/lib/db";
-import { loadContacts, type PhoneContact } from "@/lib/contacts";
+import { loadContacts, pickContact, type PhoneContact } from "@/lib/contacts";
 import { useT } from "@/lib/i18n";
 import type { Customer } from "@/lib/types";
 import { useCollection } from "@/lib/use-store";
@@ -39,17 +39,33 @@ export function CustomerPicker({ value, onChange }: Props) {
 
   async function importContacts() {
     setLoading(true);
+    // Preferred: the Android system picker — no runtime permission needed.
+    const picked = await pickContact();
+    if (picked.ok) {
+      setLoading(false);
+      setName(picked.contact.name);
+      setPhone(picked.contact.phone);
+      setAdding(true);
+      return;
+    }
+    if (picked.reason === "cancelled") {
+      setLoading(false);
+      return;
+    }
+    // Fallback: full list read (asks for READ_CONTACTS).
     const res = await loadContacts();
     setLoading(false);
     if (!res.ok) {
       if (res.reason === "denied") toast.error(t("contactsDenied"));
       else if (res.reason === "web") toast.error(t("contactsWebOnly"));
+      else if (res.reason === "cancelled") return;
       else toast.error(`${t("contactsFailed")} ${res.detail ?? ""}`.trim());
       return;
     }
     if (res.contacts.length === 0) toast.info(t("contactsEmpty"));
     setContacts(res.contacts);
   }
+
 
   async function createCustomer(nextName: string, nextPhone: string, fromContacts: boolean) {
     if (!nextName.trim() && !nextPhone.trim()) {

@@ -186,3 +186,16 @@
 @utility safe-top {
   padding-top: env(safe-area-inset-top, 0px);
 }
+
+/* Keyboard-safe viewport height.
+   100vh is frozen to the full screen on Android, so when the on-screen
+   keyboard opens the layout keeps its old height and the content jumps,
+   leaving a blank strip. Dynamic viewport units track the visible area. */
+@supports (height: 100dvh) {
+  .min-h-screen {
+    min-height: 100dvh;
+  }
+  .h-screen {
+    height: 100dvh;
+  }
+}

@@ -13,13 +13,14 @@ const config: CapacitorConfig = {
       androidIsEncryption: false,
     },
     Keyboard: {
-      // Resize the WebView body instead of the whole viewport: without this
-      // some OEM keyboards push the entire screen up when a field is focused.
-      resize: "body",
+      // "native" lets Android's own windowSoftInputMode resize the WebView.
+      // "body" resized the document instead, which made 100vh layouts on some
+      // OEM builds jump upward and leave a blank strip when a field focused.
+      resize: "native",
       resizeOnFullScreen: true,
     },
-
   },
+
 };
 
 export default config;
