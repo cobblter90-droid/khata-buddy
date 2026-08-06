@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { UserCog } from "lucide-react";
+import { Logo } from "@/components/logo";
 
 export const Route = createFileRoute("/account")({
   head: () => ({
