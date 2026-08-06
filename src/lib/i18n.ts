@@ -113,7 +113,92 @@ export const DICT = {
   download: { ur: "Download", en: "Download" },
 
   offline: { ur: "Offline", en: "Offline" },
+
+  // Generic
+  saved: { ur: "Save ho gaya.", en: "Saved." },
+  search: { ur: "Talash karein…", en: "Search…" },
+  none: { ur: "Koi nahi", en: "None" },
+  confirm: { ur: "Haan, karein", en: "Yes, do it" },
+  close: { ur: "Band karein", en: "Close" },
+  settled: { ur: "Hisaab barabar", en: "Settled" },
+
+  // Khata
+  khataTitle: { ur: "Khata", en: "Khata" },
+  toGet: { ur: "Maine lene hain", en: "I will get" },
+  toGive: { ur: "Maine dene hain", en: "I will give" },
+  addCustomer: { ur: "Naya Customer", en: "New Customer" },
+  importContacts: { ur: "Contacts se lein", en: "Import from contacts" },
+  customerName: { ur: "Customer ka naam", en: "Customer name" },
+  phone: { ur: "Phone number", en: "Phone number" },
+  noCustomers: {
+    ur: "Abhi koi customer nahi. Naya customer banayein.",
+    en: "No customers yet. Add one.",
+  },
+  balance: { ur: "Baqaya", en: "Balance" },
+  overdueCount: { ur: "Tareekh guzar gayi", en: "Overdue" },
+  transactions: { ur: "Lain Dain", en: "Transactions" },
+  iGave: { ur: "Mainey Diye", en: "I Gave" },
+  iReceived: { ur: "Mainey Liye", en: "I Received" },
+  setReminder: { ur: "Tareekh Rakhein", en: "Set reminder" },
+  attachPhoto: { ur: "Bill ki photo", en: "Bill photo" },
+  shareBalance: { ur: "Baqaya bhejein", en: "Share balance" },
+  noTransactions: { ur: "Koi lain dain nahi.", en: "No transactions." },
+  customerNotFound: { ur: "Ye customer nahi mila.", en: "Customer not found." },
+  contactsDenied: {
+    ur: "Contacts ki ijazat nahi mili. Settings se ijazat dein.",
+    en: "Contacts permission denied. Allow it from settings.",
+  },
+  contactsEmpty: { ur: "Contacts khali hain.", en: "No contacts found." },
+  contactsUnavailable: {
+    ur: "Contacts sirf mobile app mein kaam karte hain. Manually add karein.",
+    en: "Contacts only work in the mobile app. Add manually instead.",
+  },
+  dueOn: { ur: "Tareekh", en: "Due" },
+
+  // Account
+  accountTitle: { ur: "Account", en: "Account" },
+  businessInfo: { ur: "Karobar ki maloomat", en: "Business info" },
+  businessName: { ur: "Karobar ka naam", en: "Business name" },
+  businessPhone: { ur: "Phone", en: "Phone" },
+  businessAddress: { ur: "Pata", en: "Address" },
+  logoUpload: { ur: "Logo lagayein", en: "Upload logo" },
+  settingsTitle: { ur: "App Settings", en: "App settings" },
+  language: { ur: "Zubaan", en: "Language" },
+  wasoola: { ur: "Wasoola", en: "Recovery list" },
+  wasoolaSub: { ur: "Jin se paise lene hain", en: "Customers who owe you" },
+  cashbook: { ur: "Cashbook", en: "Cashbook" },
+  cashbookSub: { ur: "Naqad aana jaana", en: "Cash in / out" },
+  appLock: { ur: "App Lock", en: "App lock" },
+  appLockSub: { ur: "PIN se app kholein", en: "Open the app with a PIN" },
+  pinTitle: { ur: "4 se 8 hindson ka PIN", en: "4 to 8 digit PIN" },
+  pinEnter: { ur: "Apna PIN daalein", en: "Enter your PIN" },
+  pinWrong: { ur: "PIN ghalat hai.", en: "Wrong PIN." },
+  unlock: { ur: "Kholein", en: "Unlock" },
+  backup: { ur: "Backup", en: "Backup" },
+  exportBackup: { ur: "Backup file banayein", en: "Export backup" },
+  importBackup: { ur: "Backup wapas lein", en: "Import backup" },
+  backupDone: { ur: "Backup file ban gayi.", en: "Backup file created." },
+  importDone: { ur: "Backup wapas aa gaya.", en: "Backup restored." },
+  importFailed: { ur: "Ye file theek nahi lagti.", en: "That file looks invalid." },
+  privacy: { ur: "Privacy Policy", en: "Privacy Policy" },
+  deletedItems: { ur: "Delete kiya hua saman", en: "Deleted items" },
+  restore: { ur: "Wapas layein", en: "Restore" },
+  deleteForever: { ur: "Hamesha ke liye delete", en: "Delete forever" },
+  emptyBin: { ur: "Recycle bin khali hai.", en: "Recycle bin is empty." },
+  deleteAccount: { ur: "Account delete karein", en: "Delete account" },
+  deleteAccountWarn: {
+    ur: "Sab data — sales, khata, items, cashbook — hamesha ke liye khatam ho jayega. Ye wapas nahi aayega.",
+    en: "All data — sales, khata, items, cashbook — will be permanently erased. This cannot be undone.",
+  },
+  accountDeleted: { ur: "Sab data delete ho gaya.", en: "All data deleted." },
+
+  // Cashbook
+  cashIn: { ur: "Naqad Aaya", en: "Cash In" },
+  cashOut: { ur: "Naqad Gaya", en: "Cash Out" },
+  netCash: { ur: "Baqi Naqad", en: "Net Cash" },
+  noCashbook: { ur: "Koi entry nahi.", en: "No entries yet." },
 } satisfies Record<string, Entry>;
+
 
 export type DictKey = keyof typeof DICT;
 
