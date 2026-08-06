@@ -29,6 +29,17 @@ jobs:
         run: |
           node -v && npm -v && java -version
 
+      # STABLE SIGNING KEY — the committed keystore replaces the random one
+      # Android would otherwise generate per build. Same certificate on every
+      # run == APK installs as an update in place, no uninstall, no data loss.
+      - name: Install committed debug keystore
+        run: |
+          test -f android-resources/debug.keystore || { echo "::error::android-resources/debug.keystore missing"; exit 1; }
+          mkdir -p ~/.android
+          cp android-resources/debug.keystore ~/.android/debug.keystore
+          echo "keystore sha256: $(sha256sum android-resources/debug.keystore | cut -d' ' -f1)"
+          keytool -list -v -keystore android-resources/debug.keystore -storepass android | grep -E "Alias name|SHA256:"
+
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
@@ -73,13 +84,50 @@ jobs:
             sed -i 's#</manifest>#    <uses-permission android:name="android.permission.READ_CONTACTS" />\n</manifest>#' "$MANIFEST"
           grep -n 'READ_CONTACTS' "$MANIFEST" || { echo "::error::READ_CONTACTS missing"; exit 1; }
 
+      # Version stamp comes from the single source of truth in the source code.
+      - name: Stamp versionName / versionCode from APP_VERSION
+        run: |
+          VERSION=$(node -e "const s=require('fs').readFileSync('src/lib/constants.ts','utf8');console.log(/APP_VERSION\s*=\s*[\"']([^\"']+)[\"']/.exec(s)[1])")
+          echo "APP_VERSION = $VERSION"
+          IFS=. read -r MA MI PA <<< "$VERSION"
+          CODE=$(( ${MA:-0} * 10000 + ${MI:-0} * 100 + ${PA:-0} ))
+          echo "versionCode = $CODE"
+          sed -i "s/versionName \".*\"/versionName \"$VERSION\"/" android/app/build.gradle
+          sed -i "s/versionCode [0-9]*/versionCode $CODE/" android/app/build.gradle
+          grep -nE "versionCode|versionName" android/app/build.gradle
 
-      # 3) Debug build only — no keystore, no release signingConfig.
+      # Point the debug signingConfig at the committed keystore explicitly, so
+      # the build never falls back to a freshly generated one.
+      - name: Pin debug signingConfig to committed keystore
+        run: |
+          cp android-resources/debug.keystore android/app/debug.keystore
+          node - <<'JS'
+          const fs = require('fs');
+          const p = 'android/app/build.gradle';
+          let s = fs.readFileSync(p, 'utf8');
+          if (!s.includes('assanDebugKeystore')) {
+            const cfg = `    signingConfigs {\n        debug {\n            // assanDebugKeystore: stable committed key — do not regenerate\n            storeFile file('debug.keystore')\n            storePassword 'android'\n            keyAlias 'androiddebugkey'\n            keyPassword 'android'\n        }\n    }\n`;
+            s = s.replace(/android\s*\{/, (m) => m + '\n' + cfg);
+            s = s.replace(/buildTypes\s*\{\s*/, (m) => m + '\n        debug {\n            signingConfig signingConfigs.debug\n        }\n');
+            fs.writeFileSync(p, s);
+          }
+          console.log(s);
+          JS
+
+      # 3) Debug build only — signed with the stable committed keystore.
       - name: Assemble debug APK
         working-directory: android
         run: |
           chmod +x ./gradlew
           ./gradlew assembleDebug --no-daemon
+
+      - name: Print APK signing certificate (must be identical across runs)
+        run: |
+          APK=$(ls android/app/build/outputs/apk/debug/*.apk | head -n1)
+          echo "APK: $APK"
+          keytool -printcert -jarfile "$APK" | grep -E "Owner|SHA256:"
+          echo "expected SHA256 fingerprint:"
+          keytool -list -v -keystore android-resources/debug.keystore -storepass android | grep "SHA256:"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
