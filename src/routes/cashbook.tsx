@@ -3,7 +3,7 @@ import { ArrowLeft, TrendingDown, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { AmountKeypad } from "@/components/amount-keypad";
+import { AmountKeypad, evalExpression } from "@/components/amount-keypad";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -44,7 +44,7 @@ function CashbookPage() {
   const cashOut = entries.filter((e) => e.kind === "out").reduce((s, e) => s + e.amount, 0);
 
   async function save() {
-    const value = toNumber(amount);
+    const value = evalExpression(amount);
     if (value <= 0 || !kind) {
       toast.error(t("amountRequired"));
       return;

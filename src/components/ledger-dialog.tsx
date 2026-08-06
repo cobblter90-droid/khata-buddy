@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import * as db from "@/lib/db";
-import { rs, todayIso, toNumber } from "@/lib/format";
+import { rs, todayIso } from "@/lib/format";
 import { useT } from "@/lib/i18n";
 import type { LedgerEntry } from "@/lib/types";
 
