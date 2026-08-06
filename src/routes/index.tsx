@@ -70,8 +70,9 @@ function SalesPage() {
   const chartData = useMemo(() => {
     const days = Math.max(
       1,
-      Math.round((range.end.getTime() - range.start.getTime()) / 86_400_000) + 1,
+      Math.floor((range.end.getTime() - range.start.getTime()) / 86_400_000) + 1,
     );
+
     const buckets = new Map<string, { label: string; cash: number; credit: number }>();
     for (let i = 0; i < Math.min(days, 31); i += 1) {
       const d = new Date(range.start);
