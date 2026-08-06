@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import * as db from "@/lib/db";
-import { loadContacts, type PhoneContact } from "@/lib/contacts";
+import { loadContacts, pickContact, type PhoneContact } from "@/lib/contacts";
 import { useT } from "@/lib/i18n";
 import type { Customer } from "@/lib/types";
 import { useCollection } from "@/lib/use-store";
