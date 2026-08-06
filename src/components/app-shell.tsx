@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState, type ReactNode } from "react";
-import { Loader2, WifiOff } from "lucide-react";
+import { Download, Loader2, WifiOff } from "lucide-react";
 
 import { ActivationScreen } from "@/components/activation-screen";
 import { AppLock } from "@/components/app-lock";
 import { LockedScreen } from "@/components/locked-screen";
 import { TabBar } from "@/components/tab-bar";
+import { checkAppVersion, type UpdateInfo } from "@/lib/app-version";
 import { initDb } from "@/lib/db";
 import { LangContext, translate } from "@/lib/i18n";
 import {
@@ -19,10 +20,13 @@ type Phase = "loading" | "activation" | "ready" | "locked";
 
 const RECHECK_MS = 5 * 60 * 1000;
 
+
 export function AppShell({ children }: { children: ReactNode }) {
   const [phase, setPhase] = useState<Phase>("loading");
   const [offline, setOffline] = useState(false);
+  const [update, setUpdate] = useState<UpdateInfo | null>(null);
   const [unlocked, setUnlocked] = useState(false);
+
   const settings = useSettings();
   const lang = settings.language;
 
@@ -102,8 +106,14 @@ export function AppShell({ children }: { children: ReactNode }) {
     return () => document.removeEventListener("visibilitychange", onHide);
   }, []);
 
+  // Update banner: ask Command Center for the latest published version.
+  useEffect(() => {
+    if (phase !== "ready") return;
+    void (async () => setUpdate(await checkAppVersion()))();
+  }, [phase]);
 
   if (phase === "loading") {
+
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -143,7 +153,24 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <LangContext.Provider value={lang}>
       <div className="safe-top mx-auto min-h-screen max-w-lg pb-24">
-
+        {update ? (
+          <div className="flex items-center justify-between gap-2 bg-primary px-4 py-2 text-primary-foreground">
+            <p className="text-xs font-semibold">
+              {translate("updateAvailable", lang)} · v{update.latestVersion}
+            </p>
+            {update.downloadUrl ? (
+              <a
+                href={update.downloadUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex shrink-0 items-center gap-1 rounded-md bg-primary-foreground/15 px-2.5 py-1 text-xs font-bold"
+              >
+                <Download className="h-3.5 w-3.5" />
+                {translate("download", lang)}
+              </a>
+            ) : null}
+          </div>
+        ) : null}
 
 
         {offline ? (

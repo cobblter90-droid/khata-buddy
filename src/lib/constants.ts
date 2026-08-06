@@ -2,7 +2,7 @@
  *  CI reads this to stamp the Android versionName/versionCode,
  *  Settings displays it, and the update checker compares against it.
  *  Bump this on every release build. */
-export const APP_VERSION = "1.0.1";
+export const APP_VERSION = "1.0.2";
 
 export const PRODUCT_KEY = "posp-khata";
 export const API_BASE = "https://urdevelopers.lovable.app";
