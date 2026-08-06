@@ -38,6 +38,13 @@ function ItemsPage() {
   const items = useCollection<Item>("items");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Item | undefined>(undefined);
+  const [query, setQuery] = useState("");
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return items;
+    return items.filter((i) => i.name.toLowerCase().includes(q));
+  }, [items, query]);
 
   return (
     <div className="px-4 pb-6">
@@ -55,13 +62,31 @@ function ItemsPage() {
         </Button>
       </header>
 
+      {items.length > 0 ? (
+        <div className="relative mb-3">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            className="h-12 pl-9"
+            autoComplete="off"
+            placeholder={t("searchItems")}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+      ) : null}
+
       {items.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
           {t("noItems")}
         </p>
+      ) : filtered.length === 0 ? (
+        <p className="rounded-2xl border border-dashed border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
+          {t("noItemMatch")}
+        </p>
       ) : (
         <ul className="space-y-2">
-          {items.map((item) => (
+          {filtered.map((item) => (
+
             <li
               key={item.id}
               className="flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-card"
