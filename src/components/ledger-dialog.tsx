@@ -2,13 +2,13 @@ import { useState } from "react";
 import { Camera, X } from "lucide-react";
 import { toast } from "sonner";
 
-import { AmountKeypad } from "@/components/amount-keypad";
+import { AmountKeypad, evalExpression } from "@/components/amount-keypad";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import * as db from "@/lib/db";
-import { rs, todayIso, toNumber } from "@/lib/format";
+import { rs, todayIso } from "@/lib/format";
 import { useT } from "@/lib/i18n";
 import type { LedgerEntry } from "@/lib/types";
 
@@ -43,7 +43,7 @@ export function LedgerDialog({ open, onOpenChange, customerId, kind }: Props) {
   }
 
   async function save() {
-    const value = toNumber(amount);
+    const value = evalExpression(amount);
     if (value <= 0) {
       toast.error(t("amountRequired"));
       return;
@@ -71,15 +71,15 @@ export function LedgerDialog({ open, onOpenChange, customerId, kind }: Props) {
         onOpenChange(next);
       }}
     >
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
+      <DialogContent className="flex max-h-[92svh] max-w-sm flex-col gap-0 overflow-hidden p-0">
+        <DialogHeader className="border-b border-border px-4 py-3">
           <DialogTitle className={kind === "diye" ? "text-credit" : "text-cash"}>
             {kind === "diye" ? t("iGave") : t("iReceived")}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
-          <div className="space-y-2">
+        <div className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
+          <div className="space-y-1.5">
             <Label htmlFor="led-amount">{t("amount")}</Label>
             <Input
               id="led-amount"
@@ -89,40 +89,42 @@ export function LedgerDialog({ open, onOpenChange, customerId, kind }: Props) {
               placeholder="0"
               className="tabular h-12 text-center text-xl font-bold"
             />
-            <p className="text-center text-xs text-muted-foreground">{rs(toNumber(amount))}</p>
+            <p className="tabular text-center text-xs text-muted-foreground">
+              {rs(evalExpression(amount))}
+            </p>
           </div>
 
           <AmountKeypad value={amount} onChange={setAmount} />
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <Label htmlFor="led-note">{t("note")}</Label>
             <Input id="led-note" value={note} onChange={(e) => setNote(e.target.value)} />
           </div>
 
-          <div className="space-y-3">
-            <div className="space-y-2">
+          <div className="grid grid-cols-1 gap-3">
+            <div className="space-y-1.5">
               <Label htmlFor="led-date">{t("date")}</Label>
               <Input
                 id="led-date"
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="tabular h-12 w-full"
+                className="tabular h-11 w-full"
               />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label htmlFor="led-rem">{t("setReminder")}</Label>
               <Input
                 id="led-rem"
                 type="date"
                 value={reminder}
                 onChange={(e) => setReminder(e.target.value)}
-                className="tabular h-12 w-full"
+                className="tabular h-11 w-full"
               />
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <Label htmlFor="led-photo">{t("attachPhoto")}</Label>
             {photo ? (
               <div className="relative">
@@ -137,7 +139,7 @@ export function LedgerDialog({ open, onOpenChange, customerId, kind }: Props) {
                 </button>
               </div>
             ) : (
-              <label className="flex h-20 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-border text-sm text-muted-foreground">
+              <label className="flex h-16 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-border text-sm text-muted-foreground">
                 <Camera className="h-4 w-4" />
                 {t("attachPhoto")}
                 <input
@@ -151,11 +153,14 @@ export function LedgerDialog({ open, onOpenChange, customerId, kind }: Props) {
               </label>
             )}
           </div>
+        </div>
 
+        <div className="border-t border-border bg-background px-4 py-3">
           <Button size="lg" className="w-full" onClick={() => void save()}>
             {t("save")}
           </Button>
         </div>
+
       </DialogContent>
     </Dialog>
   );

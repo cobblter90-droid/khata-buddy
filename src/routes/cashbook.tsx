@@ -3,14 +3,14 @@ import { ArrowLeft, TrendingDown, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { AmountKeypad } from "@/components/amount-keypad";
+import { AmountKeypad, evalExpression } from "@/components/amount-keypad";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BILL_FOOTER } from "@/lib/constants";
 import * as db from "@/lib/db";
-import { formatDate, rs, todayIso, toNumber } from "@/lib/format";
+import { formatDate, rs, todayIso } from "@/lib/format";
 import { useT } from "@/lib/i18n";
 import type { CashbookEntry } from "@/lib/types";
 import { useCollection } from "@/lib/use-store";
@@ -44,7 +44,7 @@ function CashbookPage() {
   const cashOut = entries.filter((e) => e.kind === "out").reduce((s, e) => s + e.amount, 0);
 
   async function save() {
-    const value = toNumber(amount);
+    const value = evalExpression(amount);
     if (value <= 0 || !kind) {
       toast.error(t("amountRequired"));
       return;
