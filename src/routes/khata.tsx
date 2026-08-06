@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { AlertTriangle, ChevronRight, Plus } from "lucide-react";
+import { useMemo, useState } from "react";
+import { AlertTriangle, ChevronRight, Plus, Search } from "lucide-react";
 
 import { CustomerDialog } from "@/components/customer-dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { rs } from "@/lib/format";
 import { useT } from "@/lib/i18n";
 import { balanceOf, overdueCustomers, totals } from "@/lib/khata";
@@ -35,6 +36,13 @@ function KhataPage() {
   const customers = useCollection<Customer>("customers");
   const entries = useCollection<LedgerEntry>("ledger");
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return customers;
+    return customers.filter((c) => `${c.name} ${c.phone}`.toLowerCase().includes(q));
+  }, [customers, query]);
 
   const { toGet, toGive } = totals(customers, entries);
   const overdue = overdueCustomers(customers, entries);
@@ -73,15 +81,26 @@ function KhataPage() {
         </Link>
       ) : null}
 
-      <h2 className="mt-6 mb-2 text-sm font-bold text-muted-foreground">{t("transactions")}</h2>
+      <div className="relative mt-4">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          className="h-12 pl-9"
+          autoComplete="off"
+          placeholder={t("searchCustomer")}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      </div>
 
-      {customers.length === 0 ? (
+      <h2 className="mt-4 mb-2 text-sm font-bold text-muted-foreground">{t("transactions")}</h2>
+
+      {visible.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
-          {t("noCustomers")}
+          {customers.length === 0 ? t("noCustomers") : t("noCustomerMatch")}
         </p>
       ) : (
         <ul className="space-y-2">
-          {customers.map((c) => {
+          {visible.map((c) => {
             const bal = balanceOf(c.id, entries);
             return (
               <li key={c.id}>

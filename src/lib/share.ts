@@ -38,23 +38,19 @@ async function shareBase64(base64: string, fileName: string, mime: string, title
   link.click();
 }
 
-export async function shareNodeAsImage(node: HTMLElement, fileName: string, title: string) {
+export async function shareNodeAsImage(
+  node: HTMLElement,
+  fileName: string,
+  title: string,
+  format: "png" | "jpeg" = "jpeg",
+) {
   const canvas = await nodeToCanvas(node);
-  await shareBase64(stripDataUrl(canvas.toDataURL("image/png")), `${fileName}.png`, "image/png", title);
+  const mime = format === "png" ? "image/png" : "image/jpeg";
+  const ext = format === "png" ? "png" : "jpg";
+  const dataUrl = format === "png" ? canvas.toDataURL(mime) : canvas.toDataURL(mime, 0.92);
+  await shareBase64(stripDataUrl(dataUrl), `${fileName}.${ext}`, mime, title);
 }
 
-export async function shareNodeAsPdf(node: HTMLElement, fileName: string, title: string) {
-  const canvas = await nodeToCanvas(node);
-  const { jsPDF } = await import("jspdf");
-  const pdf = new jsPDF({ unit: "pt", format: "a4" });
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const margin = 24;
-  const width = pageWidth - margin * 2;
-  const height = (canvas.height / canvas.width) * width;
-  pdf.addImage(canvas.toDataURL("image/png"), "PNG", margin, margin, width, height);
-  const base64 = pdf.output("datauristring");
-  await shareBase64(stripDataUrl(base64), `${fileName}.pdf`, "application/pdf", title);
-}
 
 /** Opens WhatsApp with a prefilled message; falls back to SMS. */
 export async function shareText(text: string, phone?: string) {

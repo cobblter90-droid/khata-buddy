@@ -1,14 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef } from "react";
-import { ArrowLeft, FileText, ImageIcon } from "lucide-react";
+import { useRef, useState } from "react";
+import { ArrowLeft, Pencil, Share2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { LOGO_URL } from "@/components/logo";
+import { SaleDialog } from "@/components/sale-dialog";
 import { Button } from "@/components/ui/button";
 import { BILL_FOOTER } from "@/lib/constants";
 import { formatDateTime, rs } from "@/lib/format";
 import { useT } from "@/lib/i18n";
-import { shareNodeAsImage, shareNodeAsPdf } from "@/lib/share";
+import { deleteSaleWithLedger } from "@/lib/sale-khata";
+import { shareNodeAsImage } from "@/lib/share";
 import type { Sale } from "@/lib/types";
 import { unitLabel } from "@/lib/units";
 import { useDoc, useSettings } from "@/lib/use-store";
@@ -20,7 +22,7 @@ export const Route = createFileRoute("/sale/$saleId")({
       {
         name: "description",
         content:
-          "Itemised bill view with cash/credit mode, totals and one-tap sharing as image or PDF over WhatsApp or SMS.",
+          "Itemised bill view with cash/credit mode, totals and one-tap image sharing through your phone's share sheet.",
       },
       { property: "og:title", content: "Bill Details | Assan Khata" },
       {
@@ -38,6 +40,7 @@ function SaleInvoicePage() {
   const sale = useDoc<Sale>("sales", saleId);
   const settings = useSettings();
   const billRef = useRef<HTMLDivElement>(null);
+  const [editing, setEditing] = useState(false);
 
   if (!sale) {
     return (
@@ -50,13 +53,13 @@ function SaleInvoicePage() {
     );
   }
 
-  async function share(kind: "image" | "pdf") {
+  async function share() {
     const node = billRef.current;
     if (!node || !sale) return;
     try {
       const title = `${sale.invoiceNo} — ${settings.businessName || "Assan Khata"}`;
-      if (kind === "image") await shareNodeAsImage(node, sale.invoiceNo, title);
-      else await shareNodeAsPdf(node, sale.invoiceNo, title);
+      // JPG through the OS share sheet: WhatsApp, SMS, email — user's choice.
+      await shareNodeAsImage(node, sale.invoiceNo, title, "jpeg");
     } catch (err) {
       console.error(err);
       toast.error("Share nahi ho saka.");
@@ -148,6 +151,12 @@ function SaleInvoicePage() {
             <span>{t("grandTotal")}</span>
             <span className="tabular">{rs(sale.total)}</span>
           </div>
+          {sale.customerName ? (
+            <div className="flex justify-between text-xs">
+              <span>{t("customer")}</span>
+              <span className="font-bold">{sale.customerName}</span>
+            </div>
+          ) : null}
           <div className="flex justify-between text-xs">
             <span>{t("paymentMode")}</span>
             <span className="font-bold">{sale.mode === "cash" ? t("cash") : t("credit")}</span>
@@ -159,16 +168,34 @@ function SaleInvoicePage() {
         </p>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <Button variant="outline" onClick={() => void share("image")}>
-          <ImageIcon className="mr-2 h-4 w-4" />
-          {t("shareImage")}
+      <div className="mt-4 space-y-3">
+        <Button className="h-12 w-full text-base" onClick={() => void share()}>
+          <Share2 className="mr-2 h-4 w-4" />
+          {t("shareInvoice")}
         </Button>
-        <Button onClick={() => void share("pdf")}>
-          <FileText className="mr-2 h-4 w-4" />
-          {t("sharePdf")}
-        </Button>
+        <div className="grid grid-cols-2 gap-3">
+          <Button variant="outline" className="h-12" onClick={() => setEditing(true)}>
+            <Pencil className="mr-2 h-4 w-4" />
+            {t("editSale")}
+          </Button>
+          <Button
+            variant="outline"
+            className="h-12 border-destructive/40 text-destructive"
+            onClick={() => {
+              void (async () => {
+                await deleteSaleWithLedger(sale!.id);
+                toast.success(t("saleDeleted"));
+                window.history.back();
+              })();
+            }}
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            {t("deleteSale")}
+          </Button>
+        </div>
       </div>
+
+      <SaleDialog open={editing} onOpenChange={setEditing} editing={sale} />
     </div>
   );
 }

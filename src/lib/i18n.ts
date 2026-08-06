@@ -79,6 +79,24 @@ export const DICT = {
   amountRequired: { ur: "Raqam daalein.", en: "Enter an amount." },
   saleSaved: { ur: "Sale save ho gayi.", en: "Sale saved." },
 
+  searchCustomer: { ur: "Customer talash karein…", en: "Search customer…" },
+  addNewCustomer: { ur: "Naya customer banayein", en: "Add new customer" },
+  customerRequired: {
+    ur: "Udhaar ke liye customer zaroori hai.",
+    en: "Udhaar (credit) needs a customer.",
+  },
+  change: { ur: "Badlein", en: "Change" },
+  optional: { ur: "(marzi se)", en: "(optional)" },
+  noCustomerMatch: { ur: "Koi customer nahi mila.", en: "No customer found." },
+  fromSale: { ur: "Sale se", en: "From sale" },
+  editSale: { ur: "Sale mein tabdeeli", en: "Edit sale" },
+  saleUpdated: { ur: "Sale update ho gayi.", en: "Sale updated." },
+  deleteSale: { ur: "Sale delete karein", en: "Delete sale" },
+  saleDeleted: { ur: "Sale delete ho gayi.", en: "Sale deleted." },
+  shareInvoice: { ur: "Bill bhejein", en: "Share bill" },
+  itemsSection: { ur: "Items", en: "Items" },
+  saveSale: { ur: "Sale save karein", en: "Save sale" },
+
   // Invoice
   invoice: { ur: "Bill", en: "Invoice" },
   invoiceNo: { ur: "Bill No.", en: "Bill No." },
