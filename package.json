@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "build:mobile": "vite build && rm -rf dist && cp -r .output/public dist && cp -n dist/index.html dist/200.html 2>/dev/null || true"
+    "build:mobile": "vite build && node scripts/build-mobile.mjs"
   },
   "dependencies": {
     "@capacitor-community/contacts": "^8.0.0",
@@ -81,6 +81,7 @@
   },
   "devDependencies": {
     "@capacitor/android": "^8.5.0",
+    "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^8.5.0",
     "@eslint/js": "^9.32.0",
     "@lovable.dev/vite-tanstack-config": "^2.8.5",

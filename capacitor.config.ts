@@ -4,7 +4,7 @@ const config: CapacitorConfig = {
   appId: "com.urdevelopers.assankhata",
   appName: "Assan Khata",
   // Must match the static web output produced by `npm run build:mobile`.
-  webDir: "dist",
+  webDir: "dist/client",
   android: {
     allowMixedContent: false,
   },
