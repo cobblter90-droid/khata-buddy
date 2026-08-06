@@ -40,11 +40,11 @@ function ItemsPage() {
   const [editing, setEditing] = useState<Item | undefined>(undefined);
   const [query, setQuery] = useState("");
 
+  const q = query.trim().toLowerCase();
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return items;
+    if (!q) return [];
     return items.filter((i) => i.name.toLowerCase().includes(q));
-  }, [items, query]);
+  }, [items, q]);
 
   return (
     <div className="px-4 pb-6">
@@ -79,11 +79,12 @@ function ItemsPage() {
         <p className="rounded-2xl border border-dashed border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
           {t("noItems")}
         </p>
-      ) : filtered.length === 0 ? (
+      ) : !q ? null : filtered.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
           {t("noItemMatch")}
         </p>
       ) : (
+
         <ul className="space-y-2">
           {filtered.map((item) => (
 
