@@ -66,7 +66,8 @@
   --color-chart-4: var(--primary);
   --color-chart-5: var(--muted-foreground);
 
-  --shadow-stat: 0 2px 4px oklch(0.2 0.015 264 / 0.10), 0 16px 34px oklch(0.2 0.015 264 / 0.18);
+  --shadow-stat: 0 2px 6px oklch(0 0 0 / 0.10), 0 12px 24px oklch(0 0 0 / 0.18);
+  --shadow-soft: 0 2px 6px oklch(0 0 0 / 0.06), 0 12px 24px oklch(0 0 0 / 0.10);
   --shadow-card: 0 1px 2px oklch(0.26 0.018 264 / 0.05), 0 8px 24px oklch(0.26 0.018 264 / 0.07);
   --shadow-raised: 0 12px 32px oklch(0.26 0.018 264 / 0.14);
   --shadow-bar: 0 -6px 24px oklch(0.26 0.018 264 / 0.09);
@@ -109,7 +110,7 @@
   --surface-foreground: oklch(0.26 0.018 264);
 
   /* Dark dashboard cards — charcoal surface, lime reserved for key numbers. */
-  --stat: oklch(0.24 0.012 264);
+  --stat: oklch(0.212 0.004 264); /* ~#1A1A1A charcoal */
   --stat-foreground: oklch(0.975 0.002 262);
   --stat-muted: oklch(0.72 0.008 264);
 }
@@ -148,7 +149,7 @@
   --surface: oklch(0.275 0.018 264);
   --surface-foreground: oklch(0.965 0.003 262);
 
-  --stat: oklch(0.205 0.012 264);
+  --stat: oklch(0.198 0.004 264);
   --stat-foreground: oklch(0.975 0.002 262);
   --stat-muted: oklch(0.72 0.008 264);
 }
@@ -188,12 +189,23 @@
   }
 }
 
-/* Dashboard-style dark card: 20px radius, soft drop shadow, charcoal fill. */
+/* Dashboard stat card: 18px radius, 18px padding, charcoal fill, soft shadow. */
 @utility stat-card {
-  border-radius: 1.25rem;
+  border-radius: 18px;
+  padding: 18px;
   background-color: var(--stat);
   color: var(--stat-foreground);
   box-shadow: var(--shadow-stat);
+}
+
+/* Light surface card (lists, panels): same 18px radius + soft drop shadow. */
+@utility soft-card {
+  border-radius: 18px;
+  padding: 16px;
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
 }
 
 /* Circular icon button / avatar on a dark grey chip. */
@@ -202,7 +214,9 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  background-color: color-mix(in oklab, var(--stat) 88%, white 12%);
+  aspect-ratio: 1 / 1;
+  flex: none;
+  background-color: color-mix(in oklab, var(--stat) 82%, white 18%);
   color: var(--stat-foreground);
 }
 

@@ -108,26 +108,21 @@ function CustomerPage() {
         </Button>
       </header>
 
-      <div
-        className={cn(
-          "rounded-2xl px-4 py-4 shadow-card",
-          balance > 0 ? "bg-cash-soft" : balance < 0 ? "bg-credit-soft" : "bg-card",
-        )}
-      >
-        <p className="text-xs font-semibold text-muted-foreground">
+      <div className="stat-card">
+        <p className="text-xs font-semibold text-stat-muted">
           {balance > 0 ? t("toGet") : balance < 0 ? t("toGive") : t("settled")}
         </p>
         <p
           className={cn(
             "tabular mt-1 text-3xl font-bold",
-            balance > 0 ? "text-cash" : balance < 0 ? "text-credit" : "text-foreground",
+            balance > 0 ? "text-primary" : balance < 0 ? "text-credit" : "text-stat-foreground",
           )}
         >
           {rs(Math.abs(balance))}
         </p>
       </div>
 
-      <div className="mt-3 flex items-center gap-2 rounded-2xl border border-border bg-card px-4 py-3">
+      <div className="soft-card mt-4 flex items-center gap-2 px-4 py-3">
         <CalendarClock
           className={cn(
             "h-4 w-4",
@@ -146,7 +141,7 @@ function CustomerPage() {
         />
       </div>
 
-      <div className="mt-3 grid grid-cols-2 gap-3">
+      <div className="mt-4 grid grid-cols-2 gap-4">
         <Button size="lg" className="bg-credit text-white hover:bg-credit/90" onClick={() => setDialog("diye")}>
           {t("iGave")}
         </Button>
@@ -157,15 +152,15 @@ function CustomerPage() {
 
       <h2 className="mt-6 mb-2 text-sm font-bold text-muted-foreground">{t("transactions")}</h2>
       {entries.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
+        <p className="rounded-[18px] border border-dashed border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
           {t("noTransactions")}
         </p>
       ) : (
-        <ul className="space-y-2">
+        <ul className="space-y-3">
           {entries.map((e) => (
             <li
               key={e.id}
-              className="flex items-start gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-card"
+              className="soft-card flex items-start gap-3 px-4 py-4"
             >
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold">
