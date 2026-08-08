@@ -41,19 +41,26 @@ function toPhoneContact(c: any): PhoneContact {
 /** Opens the Android system contact picker. No permission prompt required. */
 export async function pickContact(): Promise<PickResult> {
   if (!isNative()) return { ok: false, reason: "web" };
+  // Tell the App Lock that the upcoming background/resume is ours.
+  beginExternalIntent();
   try {
     const { Contacts } = await import("@capacitor-community/contacts");
     const res = await Contacts.pickContact({ projection: { name: true, phones: true } });
     const contact = toPhoneContact(res?.contact);
     if (!contact.name && !contact.phone) return { ok: false, reason: "cancelled" };
+    // Persist first: the form may be remounted by the time we return.
+    setPendingExternalResult({ kind: "contact", value: contact });
     return { ok: true, contact };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     if (/cancel/i.test(msg)) return { ok: false, reason: "cancelled" };
     console.error("pickContact failed", err);
     return { ok: false, reason: "failed", detail: msg };
+  } finally {
+    endExternalIntent();
   }
 }
+
 
 /** Reads the full contact list. Needs the READ_CONTACTS runtime permission. */
 export async function loadContacts(): Promise<ContactsResult> {
