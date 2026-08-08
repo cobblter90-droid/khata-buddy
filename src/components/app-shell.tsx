@@ -7,6 +7,7 @@ import { LockedScreen } from "@/components/locked-screen";
 import { TabBar } from "@/components/tab-bar";
 import { checkAppVersion, type UpdateInfo } from "@/lib/app-version";
 import { initDb } from "@/lib/db";
+import { endExternalIntent, isExpectingExternalResult } from "@/lib/external-intent";
 import { LangContext, translate } from "@/lib/i18n";
 import {
   checkLicense,
@@ -86,8 +87,13 @@ export function AppShell({ children }: { children: ReactNode }) {
       try {
         const { App } = await import("@capacitor/app");
         const handle = await App.addListener("appStateChange", ({ isActive }) => {
-          if (isActive) void verify();
-          else setUnlocked(false);
+          if (isActive) {
+            // A picker/intent we launched ourselves: skip this one lock cycle.
+            if (isExpectingExternalResult()) endExternalIntent();
+            void verify();
+            return;
+          }
+          if (!isExpectingExternalResult()) setUnlocked(false);
         });
         remove = () => void handle.remove();
       } catch {
@@ -100,7 +106,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   // Same for the browser/WebView lifecycle (covers back-button minimise).
   useEffect(() => {
     const onHide = () => {
-      if (document.visibilityState === "hidden") setUnlocked(false);
+      if (document.visibilityState === "hidden" && !isExpectingExternalResult()) setUnlocked(false);
     };
     document.addEventListener("visibilitychange", onHide);
     return () => document.removeEventListener("visibilitychange", onHide);
