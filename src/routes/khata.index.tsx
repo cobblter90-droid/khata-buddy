@@ -57,13 +57,13 @@ function KhataPage() {
         </Button>
       </header>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="stat-card">
-          <p className="text-xs font-semibold text-stat-muted">{t("toGet")}</p>
-          <p className="tabular mt-1 text-xl font-bold text-primary">{rs(toGet)}</p>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="rounded-2xl bg-cash-soft px-4 py-3 shadow-card">
+          <p className="text-xs font-semibold text-muted-foreground">{t("toGet")}</p>
+          <p className="tabular mt-1 text-xl font-bold text-cash">{rs(toGet)}</p>
         </div>
-        <div className="stat-card">
-          <p className="text-xs font-semibold text-stat-muted">{t("toGive")}</p>
+        <div className="rounded-2xl bg-credit-soft px-4 py-3 shadow-card">
+          <p className="text-xs font-semibold text-muted-foreground">{t("toGive")}</p>
           <p className="tabular mt-1 text-xl font-bold text-credit">{rs(toGive)}</p>
         </div>
       </div>
@@ -71,7 +71,7 @@ function KhataPage() {
       {overdue.length > 0 ? (
         <Link
           to="/wasoola"
-          className="mt-4 flex items-center gap-2 rounded-[18px] border border-brass/40 bg-brass/10 px-4 py-3.5 text-sm font-semibold text-foreground"
+          className="mt-3 flex items-center gap-2 rounded-2xl border border-brass/40 bg-brass/10 px-4 py-2.5 text-sm font-semibold text-foreground"
         >
           <AlertTriangle className="h-4 w-4 text-brass" />
           <span className="flex-1">
@@ -95,11 +95,11 @@ function KhataPage() {
       <h2 className="mt-4 mb-2 text-sm font-bold text-muted-foreground">{t("transactions")}</h2>
 
       {visible.length === 0 ? (
-        <p className="rounded-[18px] border border-dashed border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
+        <p className="rounded-2xl border border-dashed border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
           {customers.length === 0 ? t("noCustomers") : t("noCustomerMatch")}
         </p>
       ) : (
-        <ul className="space-y-3">
+        <ul className="space-y-2">
           {visible.map((c) => {
             const bal = balanceOf(c.id, entries);
             return (
@@ -107,9 +107,9 @@ function KhataPage() {
                 <Link
                   to="/khata/$customerId"
                   params={{ customerId: c.id }}
-                  className="soft-card flex items-center gap-3 px-4 py-4"
+                  className="flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-card"
                 >
-                  <span className="icon-circle h-10 w-10 shrink-0 text-sm font-bold">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-bold text-secondary-foreground">
                     {(c.name || "?").slice(0, 1).toUpperCase()}
                   </span>
                   <span className="min-w-0 flex-1">
@@ -122,7 +122,7 @@ function KhataPage() {
                     <span
                       className={cn(
                         "tabular block font-bold",
-                        bal > 0 ? "text-primary" : bal < 0 ? "text-credit" : "text-muted-foreground",
+                        bal > 0 ? "text-cash" : bal < 0 ? "text-credit" : "text-muted-foreground",
                       )}
                     >
                       {rs(Math.abs(bal))}

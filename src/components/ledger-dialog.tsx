@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Camera, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -8,12 +8,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import * as db from "@/lib/db";
-import {
-  beginExternalIntent,
-  endExternalIntent,
-  setPendingExternalResult,
-  takePendingExternalResult,
-} from "@/lib/external-intent";
 import { rs, todayIso } from "@/lib/format";
 import { useT } from "@/lib/i18n";
 import type { LedgerEntry } from "@/lib/types";
@@ -41,23 +35,10 @@ export function LedgerDialog({ open, onOpenChange, customerId, kind }: Props) {
     setPhoto(null);
   }
 
-  // Same external-intent guard as the contact picker: the camera/file chooser
-  // backgrounds the app, so the result is persisted and read back on mount.
-  useEffect(() => {
-    if (!open) return;
-    const pending = takePendingExternalResult("photo");
-    if (pending) setPhoto(pending);
-  }, [open]);
-
   function pickPhoto(file: File | undefined) {
-    endExternalIntent();
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => {
-      const data = typeof reader.result === "string" ? reader.result : null;
-      setPhoto(data);
-      if (data) setPendingExternalResult({ kind: "photo", value: data });
-    };
+    reader.onload = () => setPhoto(typeof reader.result === "string" ? reader.result : null);
     reader.readAsDataURL(file);
   }
 
@@ -170,7 +151,6 @@ export function LedgerDialog({ open, onOpenChange, customerId, kind }: Props) {
                   accept="image/*"
                   capture="environment"
                   className="hidden"
-                  onClick={() => beginExternalIntent()}
                   onChange={(e) => pickPhoto(e.target.files?.[0])}
                 />
               </label>

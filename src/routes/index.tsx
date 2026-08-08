@@ -115,7 +115,7 @@ function SalesPage() {
             type="button"
             onClick={() => setPeriod(key)}
             className={cn(
-              "flex-1 rounded-full border px-2 py-2 text-xs font-bold transition-colors",
+              "flex-1 rounded-xl border px-2 py-2 text-xs font-bold transition-colors",
               period === key
                 ? "border-primary bg-primary text-primary-foreground"
                 : "border-border bg-card text-muted-foreground",
@@ -127,7 +127,7 @@ function SalesPage() {
       </div>
 
       {period === "custom" ? (
-        <div className="mt-3 grid grid-cols-2 gap-4">
+        <div className="mt-3 grid grid-cols-2 gap-3">
           <label className="space-y-1 text-xs font-semibold text-muted-foreground">
             {t("from")}
             <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
@@ -139,14 +139,14 @@ function SalesPage() {
         </div>
       ) : null}
 
-      <div className="mt-4 grid grid-cols-2 gap-4">
+      <div className="mt-4 grid grid-cols-2 gap-3">
         <StatCard label={t("totalSales")} value={rs(stats.total)} tone="primary" />
         <StatCard label={t("totalOrders")} value={String(stats.orders)} tone="brass" />
         <StatCard label={t("totalCash")} value={rs(stats.cash)} tone="cash" />
         <StatCard label={t("totalCredit")} value={rs(stats.credit)} tone="credit" />
       </div>
 
-      <section className="soft-card mt-6">
+      <section className="mt-5 rounded-2xl border border-border bg-card p-4 shadow-card">
         <h2 className="flex items-center gap-2 text-sm font-bold">
           <TrendingUp className="h-4 w-4 text-primary" />
           {t("chartTitle")}
@@ -196,22 +196,22 @@ function SalesPage() {
         </div>
       </section>
 
-      <section className="mt-6">
+      <section className="mt-5">
         <h2 className="mb-2 text-sm font-bold">{t("recentSales")}</h2>
         {scoped.length === 0 ? (
-          <p className="rounded-[18px] border border-dashed border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
+          <p className="rounded-2xl border border-dashed border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
             {t("noSales")}
           </p>
         ) : (
-          <ul className="space-y-3">
+          <ul className="space-y-2">
             {scoped.slice(0, 30).map((sale) => (
               <li key={sale.id}>
                 <Link
                   to="/sale/$saleId"
                   params={{ saleId: sale.id }}
-                  className="soft-card flex items-center gap-3 px-4 py-4"
+                  className="flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-card"
                 >
-                  <span className="icon-circle h-9 w-9 shrink-0">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
                     <ReceiptText className="h-4 w-4" />
                   </span>
                   <span className="min-w-0 flex-1">
@@ -260,18 +260,17 @@ function StatCard({
   value: string;
   tone: "primary" | "cash" | "credit" | "brass";
 }) {
-  // Dark charcoal cards; lime is an accent on the key numbers only.
-  const valueClass = {
-    primary: "text-primary",
-    cash: "text-primary",
-    credit: "text-credit",
-    brass: "text-stat-foreground",
+  const toneClass = {
+    primary: "bg-primary text-primary-foreground",
+    cash: "bg-cash text-cash-foreground",
+    credit: "bg-credit text-credit-foreground",
+    brass: "bg-brass text-brass-foreground",
   }[tone];
 
   return (
-    <div className="stat-card">
-      <p className="text-[11px] font-semibold uppercase tracking-wide text-stat-muted">{label}</p>
-      <p className={cn("tabular mt-1 text-lg font-bold leading-tight", valueClass)}>{value}</p>
+    <div className={cn("rounded-2xl px-4 py-3 shadow-card", toneClass)}>
+      <p className="text-[11px] font-semibold uppercase tracking-wide opacity-85">{label}</p>
+      <p className="tabular mt-1 text-lg font-bold leading-tight">{value}</p>
     </div>
   );
 }

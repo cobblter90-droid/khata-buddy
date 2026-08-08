@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Loader2, UserPlus, Users } from "lucide-react";
 import { toast } from "sonner";
 
@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import * as db from "@/lib/db";
 import { loadContacts, pickContact } from "@/lib/contacts";
-import { takePendingExternalResult } from "@/lib/external-intent";
 import { useT } from "@/lib/i18n";
 import type { Customer } from "@/lib/types";
 
@@ -32,16 +31,6 @@ export function CustomerDialog({ open, onOpenChange, editing }: Props) {
   const [contacts, setContacts] = useState<Contact[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
-
-  // The contact picker may have returned while the App Lock was mounting, so
-  // always read the persisted result back when this form appears.
-  useEffect(() => {
-    if (!open) return;
-    const pending = takePendingExternalResult("contact");
-    if (!pending) return;
-    setName(pending.name);
-    setPhone(pending.phone);
-  }, [open]);
 
   function reset() {
     setName(editing?.name ?? "");
