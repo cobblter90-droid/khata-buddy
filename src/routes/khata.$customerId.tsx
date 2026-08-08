@@ -108,19 +108,14 @@ function CustomerPage() {
         </Button>
       </header>
 
-      <div
-        className={cn(
-          "stat-card",
-          balance > 0 ? "bg-cash-soft" : balance < 0 ? "bg-credit-soft" : "bg-card",
-        )}
-      >
-        <p className="text-xs font-semibold text-muted-foreground">
+      <div className="stat-card">
+        <p className="text-xs font-semibold text-stat-muted">
           {balance > 0 ? t("toGet") : balance < 0 ? t("toGive") : t("settled")}
         </p>
         <p
           className={cn(
             "tabular mt-1 text-3xl font-bold",
-            balance > 0 ? "text-cash" : balance < 0 ? "text-credit" : "text-foreground",
+            balance > 0 ? "text-primary" : balance < 0 ? "text-credit" : "text-stat-foreground",
           )}
         >
           {rs(Math.abs(balance))}
