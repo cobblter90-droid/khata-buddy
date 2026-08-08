@@ -58,12 +58,12 @@ function KhataPage() {
       </header>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-2xl bg-cash-soft px-4 py-3 shadow-card">
-          <p className="text-xs font-semibold text-muted-foreground">{t("toGet")}</p>
-          <p className="tabular mt-1 text-xl font-bold text-cash">{rs(toGet)}</p>
+        <div className="stat-card px-4 py-3.5">
+          <p className="text-xs font-semibold text-stat-muted">{t("toGet")}</p>
+          <p className="tabular mt-1 text-xl font-bold text-primary">{rs(toGet)}</p>
         </div>
-        <div className="rounded-2xl bg-credit-soft px-4 py-3 shadow-card">
-          <p className="text-xs font-semibold text-muted-foreground">{t("toGive")}</p>
+        <div className="stat-card px-4 py-3.5">
+          <p className="text-xs font-semibold text-stat-muted">{t("toGive")}</p>
           <p className="tabular mt-1 text-xl font-bold text-credit">{rs(toGive)}</p>
         </div>
       </div>
@@ -107,9 +107,9 @@ function KhataPage() {
                 <Link
                   to="/khata/$customerId"
                   params={{ customerId: c.id }}
-                  className="flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-card"
+                  className="flex items-center gap-3 rounded-[1.25rem] border border-border bg-card px-4 py-3 shadow-card"
                 >
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-bold text-secondary-foreground">
+                  <span className="icon-circle h-10 w-10 shrink-0 text-sm font-bold">
                     {(c.name || "?").slice(0, 1).toUpperCase()}
                   </span>
                   <span className="min-w-0 flex-1">
@@ -122,7 +122,7 @@ function KhataPage() {
                     <span
                       className={cn(
                         "tabular block font-bold",
-                        bal > 0 ? "text-cash" : bal < 0 ? "text-credit" : "text-muted-foreground",
+                        bal > 0 ? "text-primary" : bal < 0 ? "text-credit" : "text-muted-foreground",
                       )}
                     >
                       {rs(Math.abs(bal))}

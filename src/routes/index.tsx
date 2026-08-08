@@ -115,7 +115,7 @@ function SalesPage() {
             type="button"
             onClick={() => setPeriod(key)}
             className={cn(
-              "flex-1 rounded-xl border px-2 py-2 text-xs font-bold transition-colors",
+              "flex-1 rounded-full border px-2 py-2 text-xs font-bold transition-colors",
               period === key
                 ? "border-primary bg-primary text-primary-foreground"
                 : "border-border bg-card text-muted-foreground",
@@ -146,7 +146,7 @@ function SalesPage() {
         <StatCard label={t("totalCredit")} value={rs(stats.credit)} tone="credit" />
       </div>
 
-      <section className="mt-5 rounded-2xl border border-border bg-card p-4 shadow-card">
+      <section className="mt-5 rounded-[1.25rem] border border-border bg-card p-4 shadow-card">
         <h2 className="flex items-center gap-2 text-sm font-bold">
           <TrendingUp className="h-4 w-4 text-primary" />
           {t("chartTitle")}
@@ -209,9 +209,9 @@ function SalesPage() {
                 <Link
                   to="/sale/$saleId"
                   params={{ saleId: sale.id }}
-                  className="flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-card"
+                  className="flex items-center gap-3 rounded-[1.25rem] border border-border bg-card px-4 py-3 shadow-card"
                 >
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
+                  <span className="icon-circle h-9 w-9 shrink-0">
                     <ReceiptText className="h-4 w-4" />
                   </span>
                   <span className="min-w-0 flex-1">
@@ -260,17 +260,18 @@ function StatCard({
   value: string;
   tone: "primary" | "cash" | "credit" | "brass";
 }) {
-  const toneClass = {
-    primary: "bg-primary text-primary-foreground",
-    cash: "bg-cash text-cash-foreground",
-    credit: "bg-credit text-credit-foreground",
-    brass: "bg-brass text-brass-foreground",
+  // Dark charcoal cards; lime is an accent on the key numbers only.
+  const valueClass = {
+    primary: "text-primary",
+    cash: "text-primary",
+    credit: "text-credit",
+    brass: "text-stat-foreground",
   }[tone];
 
   return (
-    <div className={cn("rounded-2xl px-4 py-3 shadow-card", toneClass)}>
-      <p className="text-[11px] font-semibold uppercase tracking-wide opacity-85">{label}</p>
-      <p className="tabular mt-1 text-lg font-bold leading-tight">{value}</p>
+    <div className="stat-card px-4 py-3.5">
+      <p className="text-[11px] font-semibold uppercase tracking-wide text-stat-muted">{label}</p>
+      <p className={cn("tabular mt-1 text-lg font-bold leading-tight", valueClass)}>{value}</p>
     </div>
   );
 }
