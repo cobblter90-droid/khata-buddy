@@ -9,6 +9,13 @@
 
 import { Capacitor } from "@capacitor/core";
 
+import {
+  beginExternalIntent,
+  endExternalIntent,
+  setPendingExternalResult,
+} from "./external-intent";
+
+
 export type PhoneContact = { name: string; phone: string };
 
 export type ContactsResult =
