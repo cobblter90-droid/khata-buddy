@@ -9,6 +9,8 @@
 
 import { Capacitor } from "@capacitor/core";
 
+import { beginNativeActivity, endNativeActivity } from "./native-activity";
+
 export type PhoneContact = { name: string; phone: string };
 
 export type ContactsResult =
