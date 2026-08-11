@@ -7,6 +7,7 @@ export type LicenseStatus = "active" | "locked" | "not_found" | "offline" | "unk
 const KEY_LICENSE = "assan_khata_license_key";
 const KEY_DEVICE = "assan_khata_device_id";
 const KEY_LAST_STATUS = "assan_khata_last_status";
+const KEY_TOKEN = "assan_khata_device_token";
 
 async function prefGet(key: string): Promise<string | null> {
   try {
