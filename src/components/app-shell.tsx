@@ -8,6 +8,7 @@ import { TabBar } from "@/components/tab-bar";
 import { checkAppVersion, type UpdateInfo } from "@/lib/app-version";
 import { initDb } from "@/lib/db";
 import { LangContext, translate } from "@/lib/i18n";
+import { isNativeActivityActive } from "@/lib/native-activity";
 import {
   checkLicense,
   clearLicenseKey,
