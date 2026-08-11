@@ -43,6 +43,7 @@ function toPhoneContact(c: any): PhoneContact {
 /** Opens the Android system contact picker. No permission prompt required. */
 export async function pickContact(): Promise<PickResult> {
   if (!isNative()) return { ok: false, reason: "web" };
+  beginNativeActivity();
   try {
     const { Contacts } = await import("@capacitor-community/contacts");
     const res = await Contacts.pickContact({ projection: { name: true, phones: true } });
@@ -54,6 +55,8 @@ export async function pickContact(): Promise<PickResult> {
     if (/cancel/i.test(msg)) return { ok: false, reason: "cancelled" };
     console.error("pickContact failed", err);
     return { ok: false, reason: "failed", detail: msg };
+  } finally {
+    endNativeActivity();
   }
 }
 
@@ -61,6 +64,7 @@ export async function pickContact(): Promise<PickResult> {
 export async function loadContacts(): Promise<ContactsResult> {
   if (!isNative()) return { ok: false, reason: "web" };
 
+  beginNativeActivity();
   try {
     const { Contacts } = await import("@capacitor-community/contacts");
 
@@ -77,5 +81,8 @@ export async function loadContacts(): Promise<ContactsResult> {
   } catch (err) {
     console.error("Contacts read failed", err);
     return { ok: false, reason: "failed", detail: err instanceof Error ? err.message : String(err) };
+  } finally {
+    endNativeActivity();
   }
 }
+
