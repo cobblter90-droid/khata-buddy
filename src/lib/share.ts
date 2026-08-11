@@ -1,3 +1,5 @@
+import { withNativeActivity } from "./native-activity";
+
 /**
  * Bill sharing: render a DOM node to PNG or PDF and hand it to the native
  * share sheet (WhatsApp / SMS / anything installed). Fully offline.
@@ -72,7 +74,7 @@ async function shareBase64(base64: string, fileName: string, mime: string, title
     const { Share } = await import("@capacitor/share");
     await Filesystem.writeFile({ path: fileName, data: base64, directory: Directory.Cache });
     const { uri } = await Filesystem.getUri({ path: fileName, directory: Directory.Cache });
-    await Share.share({ title, text: title, files: [uri] });
+    await withNativeActivity(() => Share.share({ title, text: title, files: [uri] }));
     return;
   }
   // Web fallback: download via a blob URL (data: URLs can navigate instead).
@@ -109,7 +111,7 @@ export async function shareText(text: string, phone?: string) {
   if (isNative()) {
     try {
       const { Share } = await import("@capacitor/share");
-      await Share.share({ text });
+      await withNativeActivity(() => Share.share({ text }));
       return;
     } catch {
       /* fall through */
@@ -189,7 +191,7 @@ export async function saveTextFile(
     }
     const { uri } = await Filesystem.getUri({ path: fileName, directory });
     try {
-      await Share.share({ title, text: title, files: [uri] });
+      await withNativeActivity(() => Share.share({ title, text: title, files: [uri] }));
     } catch {
       /* user dismissed the sheet — the file is already saved */
     }
