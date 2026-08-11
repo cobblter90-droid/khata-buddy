@@ -78,20 +78,16 @@ async function getDeviceMeta() {
   return { device_type, device_name, os };
 }
 
+/** Command Center returns not_found | locked | expired | trial | active.
+ *  trial behaves like active for the shopkeeper; expired behaves like locked. */
 function normalizeStatus(payload: unknown): LicenseStatus {
   const raw =
     typeof payload === "object" && payload
-      ? String(
-          (payload as Record<string, unknown>)["status"] ??
-            (payload as Record<string, unknown>)["state"] ??
-            (payload as Record<string, unknown>)["license_status"] ??
-            "",
-        ).toLowerCase()
+      ? String((payload as Record<string, unknown>)["status"] ?? "").toLowerCase()
       : "";
-  if (raw.includes("active")) return "active";
-  if (raw.includes("lock")) return "locked";
-  if (raw.includes("not_found") || raw.includes("notfound") || raw.includes("invalid"))
-    return "not_found";
+  if (raw === "active" || raw === "trial") return "active";
+  if (raw === "locked" || raw === "expired") return "locked";
+  if (raw === "not_found") return "not_found";
   return "unknown";
 }
 
@@ -102,26 +98,40 @@ export async function checkLicense(licenseKey: string): Promise<LicenseResult> {
   if (!key) return { status: "not_found" };
 
   const [device_id, meta] = await Promise.all([getDeviceId(), getDeviceMeta()]);
+  const device_token = await prefGet(KEY_TOKEN);
 
   try {
-    const res = await fetch(`${API_BASE}/api/public/license/check`, {
+    const res = await fetch(`${API_BASE}/api/public/v1/license/check`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         license_key: key,
         device_id,
-        device_type: meta.device_type,
+        device_type: meta.device_type === "android" || meta.device_type === "ios" ? "mobile" : "pc",
         device_name: meta.device_name,
         os: meta.os,
         product_key: PRODUCT_KEY,
+        device_token,
+        request_id: randomUuid(),
+        client_timestamp: new Date().toISOString(),
       }),
     });
 
+    const payload = (await res.json().catch(() => null)) as Record<string, unknown> | null;
+
+    if (typeof payload?.["device_token"] === "string") {
+      await prefSet(KEY_TOKEN, payload["device_token"] as string);
+    }
+
     if (res.status === 404) return { status: "not_found" };
 
-    const payload = (await res.json().catch(() => null)) as Record<string, unknown> | null;
     const status = normalizeStatus(payload);
-    const message = typeof payload?.["message"] === "string" ? payload["message"] : undefined;
+    const message =
+      typeof payload?.["reason"] === "string"
+        ? (payload["reason"] as string)
+        : typeof payload?.["error"] === "string"
+          ? (payload["error"] as string)
+          : undefined;
 
     if (status === "unknown" && !res.ok) return { status: "not_found", message };
     if (status !== "unknown") await setLastStatus(status);
