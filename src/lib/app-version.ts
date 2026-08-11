@@ -18,7 +18,7 @@ export function compareVersions(a: string, b: string): number {
   return 0;
 }
 
-export const APP_VERSION_URL = `${API_BASE}/api/public/app-version?product_key=${PRODUCT_KEY}&platform=mobile`;
+export const APP_VERSION_URL = `${API_BASE}/api/public/v1/app-version?product_key=${PRODUCT_KEY}&platform=mobile&client_version=${APP_VERSION}`;
 
 /** Returns update info only when the server version is strictly newer. */
 export async function checkAppVersion(): Promise<UpdateInfo | null> {
