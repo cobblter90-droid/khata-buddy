@@ -40,24 +40,24 @@ export const clearLicenseKey = () => prefRemove(KEY_LICENSE);
 export const getLastStatus = () => prefGet(KEY_LAST_STATUS) as Promise<LicenseStatus | null>;
 export const setLastStatus = (s: LicenseStatus) => prefSet(KEY_LAST_STATUS, s);
 
-function randomId() {
+const UUID_V4 =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+/** Command Center requires a UUID v4 device_id — nothing else validates. */
+function randomUuid(): string {
   const bytes = new Uint8Array(16);
   if (typeof crypto !== "undefined" && crypto.getRandomValues) crypto.getRandomValues(bytes);
   else for (let i = 0; i < bytes.length; i += 1) bytes[i] = Math.floor(Math.random() * 256);
-  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+  bytes[6] = ((bytes[6] ?? 0) & 0x0f) | 0x40;
+  bytes[8] = ((bytes[8] ?? 0) & 0x3f) | 0x80;
+  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
 export async function getDeviceId(): Promise<string> {
   const existing = await prefGet(KEY_DEVICE);
-  if (existing) return existing;
-  let id = randomId();
-  try {
-    const { Device } = await import("@capacitor/device");
-    const info = await Device.getId();
-    if (info?.identifier) id = info.identifier;
-  } catch {
-    /* web fallback keeps the random id */
-  }
+  if (existing && UUID_V4.test(existing)) return existing;
+  const id = randomUuid();
   await prefSet(KEY_DEVICE, id);
   return id;
 }
